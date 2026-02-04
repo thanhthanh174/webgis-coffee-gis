@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'maps',
+    "store",
 ]
 
 MIDDLEWARE = [
@@ -138,3 +139,6 @@ JAZZMIN_SETTINGS = {
     "custom_css": "admin/css/admin.css",
 }
 STATICFILES_DIRS = [ BASE_DIR / "static" ]
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"

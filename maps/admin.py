@@ -1,14 +1,6 @@
 from django.contrib import admin
-from .models import Cafe, Booking
+from .models import Cafe, Product, Booking
 
-
-@admin.register(Cafe)
-class CafeAdmin(admin.ModelAdmin):
-    list_display = ("name", "address")
-
-
-@admin.register(Booking)
-class BookingAdmin(admin.ModelAdmin):
-    list_display = ("customer_name", "cafe", "phone", "people", "date", "time")
-    list_filter = ("date", "cafe")
-    search_fields = ("customer_name", "phone")
+admin.site.register(Cafe)
+admin.site.register(Product)
+admin.site.register(Booking)

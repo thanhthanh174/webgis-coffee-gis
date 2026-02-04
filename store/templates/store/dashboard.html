@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>KATINAT</title>
+
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'store/style.css' %}">
+</head>
+<body>
+
+<div class="container">
+    <h1>☕ Danh sách các quán KATINAT ở TP. HCM</h1>
+
+
+    {% for cafe in cafes %}
+        <div class="store-item">
+            <div class="store-info">
+                <div class="store-name">{{ cafe.name }}</div>
+                <div class="store-address">{{ cafe.address }}</div>
+            </div>
+
+            <a class="book-btn" href="{% url 'store:book' cafe.id %}">Đặt chỗ</a>
+        </div>
+
+    {% empty %}
+        <p>Chưa có quán nào.</p>
+    {% endfor %}
+</div>
+
+</body>
+</html>

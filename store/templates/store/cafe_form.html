@@ -1,0 +1,16 @@
+<h2>📅 Đặt chỗ tại {{ cafe.name }}</h2>
+
+<form method="post" action="{% url 'store:submit_booking' %}">
+    {% csrf_token %}
+    <input type="hidden" name="cafe_id" value="{{ cafe.id }}">
+
+    Tên: <input name="name"><br><br>
+    SĐT: <input name="phone"><br><br>
+    Số người: <input type="number" name="people"><br><br>
+    Ngày: <input type="date" name="date"><br><br>
+    Giờ: <input type="time" name="time"><br><br>
+
+    <button type="submit">Gửi</button>
+</form>
+
+<a href="{% url 'store:cafe_list' %}">⬅ Quay lại</a>

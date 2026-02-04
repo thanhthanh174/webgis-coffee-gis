@@ -1,40 +1,47 @@
 from django.shortcuts import render
-from .models import Cafe
-import json
 from django.http import JsonResponse
+from .models import Cafe, Product, Booking
 from .models import Cafe
-from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render
 import json
-from .models import Booking, Cafe
 
 def simplemap(request):
     cafes = Cafe.objects.all()
-    data = [
-        {"name": c.name, "lat": c.lat, "lng": c.lng, "address": c.address}
-        for c in cafes
-    ]
-    return render(request, "maps/map.html", {
-        "cafes": json.dumps(data)
+    data=[]
+    for c in cafes:
+        data.append({
+            "id": c.id,
+            "name": c.name,
+            "lat": c.lat,
+            "lng": c.lng,
+            "address": c.address
+        })
+    return render(request,"maps/map.html",{
+        "cafes_json": json.dumps(data)
     })
 
-def get_cafes(request):
-    data = list(Cafe.objects.values())
+
+def get_menu(request, cafe_id):
+    products = Product.objects.filter(cafe_id=cafe_id)
+    data = []
+    for p in products:
+        data.append({
+            "id": p.id,
+            "name": p.name,
+            "price": p.price,
+            "description": p.description,
+            "image": p.image.url if p.image else ""
+        })
     return JsonResponse(data, safe=False)
 
-@csrf_exempt
-def book(request):
+
+def book_cafe(request):
     if request.method == "POST":
-        data = json.loads(request.body)
-
         Booking.objects.create(
-            cafe_id_id=data["cafe_id"],
-            name=data["name"],
-            phone=data["phone"],
-            people=data["people"],
-            date=data["date"],
-            time=data["time"],
+            cafe_id=request.POST["cafe_id"],
+            name=request.POST["name"],
+            phone=request.POST["phone"],
+            date=request.POST["date"],
+            time=request.POST["time"]
         )
-
         return JsonResponse({"status": "ok"})
-
-    return JsonResponse({"error": "Invalid method"}, status=400)

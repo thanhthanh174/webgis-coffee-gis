@@ -1,0 +1,110 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #f7efe5;
+    margin: 0;
+    padding: 0;
+    color: #4b2e2e;
+}
+
+.container {
+    max-width: 900px;
+    margin: 40px auto;
+    background: #fffaf3;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #6f4e37;
+    margin-bottom: 25px;
+}
+
+a {
+    text-decoration: none;
+    color: #6f4e37;
+    font-weight: 500;
+}
+
+a:hover {
+    color: #3e2723;
+}
+
+.store-item {
+    background: #fff;
+    border-left: 6px solid #6f4e37;
+    margin-bottom: 15px;
+    padding: 15px 20px;
+    border-radius: 10px;
+    transition: 0.2s ease;
+}
+
+.store-item:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.store-name {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.store-address {
+    font-size: 13px;
+    color: #7a5c50;
+}
+
+.book-btn {
+    float: right;
+    background: #6f4e37;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+}
+
+.book-btn:hover {
+    background: #3e2723;
+}
+
+
+.store-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    border-radius: 16px;
+    padding: 16px 20px;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.store-info {
+    max-width: 70%;
+}
+
+.store-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: #4b2e1f;
+}
+
+.store-address {
+    font-size: 14px;
+    color: #777;
+}
+
+.book-btn {
+    background: #6f4e37;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.book-btn:hover {
+    background: #5a3e2b;
+}
