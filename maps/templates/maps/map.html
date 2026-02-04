@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Bản đồ chuỗi cafe</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css"/>
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+
+    <style>
+        body { font-family: Arial; }
+        #map { height: 90vh; }
+
+        #bookingBox{
+            display:none;
+            position:fixed;
+            top:20%;
+            left:35%;
+            background:white;
+            padding:20px;
+            border:1px solid #ccc;
+            box-shadow:0 0 10px #333;
+            z-index:9999;
+            width:300px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>BẢN ĐỒ CÁC QUÁN CAFE TP.HCM</h2>
+
+<div style="padding:8px;">
+    Phương tiện:
+    <select id="mode">
+        <option value="foot">🚶 Đi bộ</option>
+        <option value="car" selected>🏍 Xe máy</option>
+    </select>
+</div>
+
+<div id="map"></div>
+
+<!-- ===== FORM ĐẶT CHỖ ===== -->
+<div id="bookingBox">
+    <h3>📅 Đặt chỗ</h3>
+    <input type="hidden" id="cafe_id">
+
+    Tên: <input id="name"><br><br>
+    SĐT: <input id="phone"><br><br>
+    Số người: <input id="people" type="number"><br><br>
+    Ngày: <input id="date" type="date"><br><br>
+    Giờ: <input id="time" type="time"><br><br>
+
+    <button type="button" onclick="submitBooking()">Gửi</button>
+    <button onclick="closeBooking()">Hủy</button>
+</div>
+
+<script>
+var map = L.map('map').setView([10.7769, 106.7009], 12);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    maxZoom:19
+}).addTo(map);
+
+var cafes = {{ cafes|safe }};
+var lastUserPos = null;
+var userMarker = null;
+var nearestMarker = null;
+
+/* ===== ICON ===== */
+var redIcon = new L.Icon({
+    iconUrl: "https://unpkg.com/leaflet-color-markers@1.1.1/img/marker-icon-red.png",
+    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+    iconSize: [25,41],
+    iconAnchor: [12,41],
+    popupAnchor: [1,-34]
+});
+
+var goldIcon = new L.Icon({
+    iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-gold.png",
+    shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
+    iconSize: [25,41],
+    iconAnchor: [12,41]
+});
+
+/* ===== MARKER QUÁN ===== */
+cafes.forEach(function(c){
+    L.marker([c.lat, c.lng])
+        .addTo(map)
+        .bindPopup(
+            "<b>" + c.name + "</b><br>" + c.address +
+            "<br><button onclick='goToCafe("+c.lat+","+c.lng+")'>🚗 Chỉ đường</button>" +
+            "<br><button onclick='openBooking("+c.id+")'>📅 Đặt chỗ</button>"
+        );
+});
+
+/* ===== ĐỊNH VỊ ===== */
+map.locate({setView:true, maxZoom:16});
+
+map.on("locationfound", function(e){
+    lastUserPos = e.latlng;
+
+    if(userMarker){
+        map.removeLayer(userMarker);
+    }
+
+    userMarker = L.marker(lastUserPos, {icon: redIcon})
+        .addTo(map)
+        .bindPopup("📍 Bạn đang ở đây")
+        .openPopup();
+
+    findNearest(lastUserPos);
+});
+
+/* ===== TÌM GẦN NHẤT ===== */
+function findNearest(userLatLng){
+    let nearest=null;
+    let min=99999999;
+
+    cafes.forEach(c=>{
+        let d = map.distance(userLatLng, L.latLng(c.lat,c.lng));
+        if(d < min){
+            min=d;
+            nearest=c;
+        }
+    });
+
+    let cafeLatLng = L.latLng(nearest.lat,nearest.lng);
+
+    if(nearestMarker){
+        map.removeLayer(nearestMarker);
+    }
+
+    nearestMarker = L.marker(cafeLatLng,{icon: goldIcon})
+        .addTo(map)
+        .bindPopup("⭐ Quán gần nhất<br>"+nearest.name)
+        .openPopup();
+
+    drawRoute(userLatLng,cafeLatLng);
+}
+
+/* ===== VẼ ĐƯỜNG ===== */
+var routeControl=null;
+
+function drawRoute(from,to){
+    if(routeControl){
+        map.removeControl(routeControl);
+    }
+
+    let mode=document.getElementById("mode").value;
+
+    routeControl=L.Routing.control({
+        waypoints:[
+            L.latLng(from.lat,from.lng),
+            L.latLng(to.lat,to.lng)
+        ],
+        router: L.Routing.osrmv1({
+            serviceUrl: "https://router.project-osrm.org/route/v1",
+            profile: mode==="foot" ? "foot":"car"
+        }),
+        addWaypoints:false,
+        show:false
+    }).addTo(map);
+}
+
+/* ===== CLICK QUÁN ===== */
+function goToCafe(lat,lng){
+    if(!lastUserPos){
+        alert("Chưa xác định vị trí!");
+        return;
+    }
+    drawRoute(lastUserPos, L.latLng(lat,lng));
+}
+
+/* ===== ĐẶT CHỖ ===== */
+function openBooking(id){
+    document.getElementById("cafe_id").value = id;
+    document.getElementById("bookingBox").style.display="block";
+}
+
+function closeBooking(){
+    document.getElementById("bookingBox").style.display="none";
+}
+
+function submitBooking(){
+    fetch("api/book/",{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body: JSON.stringify({
+        cafe: document.getElementById("cafe_id").value,
+        customer_name: document.getElementById("name").value,
+        phone: document.getElementById("phone").value,
+        people: document.getElementById("people").value,
+        date: document.getElementById("date").value,
+        time: document.getElementById("time").value
+    })
+    })
+    .then(res => {
+        console.log("STATUS:", res.status);
+        return res.json();
+    })
+    .then(data => {
+        console.log("DATA:", data);
+        alert("🎉 Đặt chỗ thành công!");
+        closeBooking();
+    })
+    .catch(err => {
+        console.error("FETCH ERROR:", err);
+        alert("❌ Không gửi được!");
+    });
+}
+
+
+</script>
+
+</body>
+</html>
