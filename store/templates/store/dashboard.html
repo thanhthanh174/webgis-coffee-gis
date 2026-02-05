@@ -3,34 +3,110 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>KATINAT</title>
-
-    <!-- Google font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
-    <!-- CSS -->
+    <title>CoffeeGIS - KATINAT</title>
     <link rel="stylesheet" href="{% static 'store/style.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'admin/images/logo-katinat.webp' %}">
 </head>
 <body>
 
-<div class="container">
-    <h1>☕ Danh sách các quán KATINAT ở TP. HCM</h1>
+<!-- HEADER -->
+<header class="topbar">
+    <a href="/store/" class="logo-link">
+        <div class="logo">
+            <img src="{% static 'admin/images/logo-katinat.webp' %}" class="logo-icon">
+            KATINAT CoffeeGIS
+        </div>
+    </a>
+    <nav>
+        <a href="/store/">Trang chủ</a>
+        <a href="/store/list/">Chi nhánh</a>
+        <a href="{% url 'maps:map' %}">Bản đồ</a>
+    </nav>
+</header>
 
+<!-- GALLERY -->
+<section class="gallery">
+    <img src="{% static 'admin/images/katinat-nen.webp' %}" alt="Katinat">
+</section>
 
-    {% for cafe in cafes %}
-        <div class="store-item">
-            <div class="store-info">
-                <div class="store-name">{{ cafe.name }}</div>
-                <div class="store-address">{{ cafe.address }}</div>
-            </div>
+<!-- FEATURED PRODUCTS -->
+<section class="featured">
+    <p class="subtitle">Gợi ý từ Katinat</p>
+    <h2>Sản phẩm <span>nổi bật</span></h2>
 
-            <a class="book-btn" href="{% url 'store:book' cafe.id %}">Đặt chỗ</a>
+    <div class="product-grid">
+        <div class="product-card">
+             <img src="{% static 'admin/images/olong-ba-la.jpg' %}" alt="">
+            <h3>Trà Olong Ba Lá</h3>
+            <p>Đậm đà - Sang trọng </p>
         </div>
 
-    {% empty %}
-        <p>Chưa có quán nào.</p>
-    {% endfor %}
-</div>
+        <div class="product-card">
+            <img src="{% static 'admin/images/ts-chom-chom.jpg' %}" alt="">
+            <h3>Trà sữa Chôm Chôm</h3>
+            <p>Ngọt ngào - Thanh mát</p>
+        </div>
+
+        <div class="product-card">
+             <img src="{% static 'admin/images/ts-hong-dran.jpg' %}" alt="">
+            <h3>Trà sữa Hồng D'ran</h3>
+            <p>Cổ điển - Nồng nàn</p>
+        </div>
+    </div>
+</section>
+
+
+<!-- HERO -->
+<section class="hero">
+    <p class="small">TÌM QUÁN KATINAT</p>
+    <h1>Chọn <span>không gian</span> phù hợp</h1>
+    <a href="/store/list/" class="btn-view">XEM DANH SÁCH CHI NHÁNH</a>
+</section>
+
+<!-- STORY -->
+<section class="story">
+    <p class="subtitle">Một chút về</p>
+    <h2>KATINAT <span>Story</span></h2>
+    <p class="desc">
+        Tại Katinat, chúng tôi không chỉ bán cà phê, mà còn nâng niu những giá trị văn hóa vượt thời gian. Lấy cảm hứng từ con đường Catinat hào hoa một thuở, chúng tôi tái hiện một Sài Gòn xưa tinh tế giữa nhịp sống đương đại. Mỗi không gian đều được chúng tôi chăm chút để trở thành điểm chạm của cảm xúc, nơi quá khứ và hiện tại cùng giao thoa.
+        
+        Chúng tôi tin rằng giá trị thực sự nằm ở sự tận tâm, từ hương vị đậm đà trong từng tách ly đến những khoảng lặng bình yên giữa lòng phố thị. Katinat chính là tâm huyết của chúng tôi trong việc gìn giữ di sản và kết nối những tâm hồn đồng điệu. Với chúng tôi, mỗi khách hàng ghé thăm là một hành trình viết tiếp những kỷ niệm đẹp đầy kiêu hãnh.
+    </p>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-container">
+
+        <!-- LOGO -->
+        <div class="footer-logo">
+            <img src="{% static 'admin/images/cua-hang-katinat.jpg' %}" alt="Katinat">
+        </div>
+
+        <!-- CONTACT -->
+        <div class="footer-col">
+            <h3>LIÊN HỆ</h3>
+            <p>Email: cs@katinat.vn</p>
+            <p>Trụ sở chính: 96-98-100 Trần Nguyên Đán, Phường 3, Bình Thạnh, TP.HCM</p>
+            <p>CN Hà Nội: Số 11, Ngõ 84, Phố Ngọc Khánh, Giảng Võ, Ba Đình, Hà Nội</p>
+            <p>Hotline: (028) 7300 1009</p>
+        </div>
+
+        <!-- ABOUT -->
+        <div class="footer-col">
+            <h3>VỀ CHÚNG TÔI</h3>
+            <p>
+                Katinat Coffee & Tea House là chuỗi cà phê lấy cảm hứng từ
+                văn hoá Sài Gòn xưa, kết hợp phong cách hiện đại và tinh tế.
+            </p>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        © 2026 CoffeeGIS | LAP TRINH GIS | THANH - THI - THU.
+    </div>
+</footer>
+
 
 </body>
 </html>

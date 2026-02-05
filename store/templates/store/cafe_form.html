@@ -1,16 +1,75 @@
-<h2>📅 Đặt chỗ tại {{ cafe.name }}</h2>
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>CoffeeGIS - KATINAT - Chi nhánh</title>
+    <link rel="stylesheet" href="{% static 'store/list.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'admin/images/logo-katinat.webp' %}">
+</head>
+<script>
+function confirmBooking() {
+    const name = document.querySelector("input[name='name']").value;
+    const guests = document.querySelector("input[name='guests']").value;
 
-<form method="post" action="{% url 'store:submit_booking' %}">
-    {% csrf_token %}
-    <input type="hidden" name="cafe_id" value="{{ cafe.id }}">
+    if (!name || !guests) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+    }
 
-    Tên: <input name="name"><br><br>
-    SĐT: <input name="phone"><br><br>
-    Số người: <input type="number" name="people"><br><br>
-    Ngày: <input type="date" name="date"><br><br>
-    Giờ: <input type="time" name="time"><br><br>
+    const ok = confirm("Bạn chắc chắn muốn đặt chỗ không?");
+    if (ok) {
+        document.querySelector("form").submit();
+    }
+}
+</script>
 
-    <button type="submit">Gửi</button>
-</form>
+<body>
+<!-- HEADER -->
+<header class="topbar">
+    <a href="/store/" class="logo-link">
+        <div class="logo">
+            <img src="{% static 'admin/images/logo-katinat.webp' %}" class="logo-icon">
+            KATINAT CoffeeGIS
+        </div>
+    </a>
+    <nav>
+        <a href="/store/">Trang chủ</a>
+        <a href="/store/list/">Chi nhánh</a>
+        <a href="{% url 'maps:map' %}">Bản đồ</a>
+    </nav>
+</header>
 
-<a href="{% url 'store:cafe_list' %}">⬅ Quay lại</a>
+<div class="booking-page">
+    <div class="booking-box">
+        <h2>📅 Đặt chỗ tại {{ cafe.name }}</h2>
+
+        <form method="post" action="{% url 'store:submit_booking' %}">
+            {% csrf_token %}
+            <input type="hidden" name="cafe_id" value="{{ cafe.id }}">
+
+            <input name="name" placeholder="Tên của bạn">
+            <input name="phone" placeholder="Số điện thoại">
+            <input type="number" name="guests" placeholder="Số người">
+            <input type="date" name="date">
+            <input type="time" name="time">
+
+            <button type="button" class="btn-book" onclick="confirmBooking()">
+                GỬI ĐẶT CHỖ
+            </button>
+
+        </form>
+    </div>
+</div>
+
+
+<a href="{% url 'store:cafe_list' %}" class="back-link">⬅ Quay lại</a>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-bottom">
+        © 2026 CoffeeGIS | LAP TRINH GIS | THANH - THI - THU.
+    </div>
+</footer>
+</body>
+</html>
