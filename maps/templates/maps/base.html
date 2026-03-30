@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>KATINAT CoffeeGIS</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <a href="/store/" class="logo-link">
+        <div class="logo">
+            <img src="{% static 'admin/images/logo-katinat.webp' %}" class="logo-icon">
+            KATINAT CoffeeGIS
+        </div>
+    </a>
+    <div class="menu">
+        <a href="/">Trang chủ</a>
+        <a href="/store/list/">Chi nhánh</a>
+        <a href="/">Bản đồ</a>
+        {% if user.is_authenticated %}
+            <form method="POST" action="{% url 'store:logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="login-btn">Đăng xuất</button>
+            </form>
+        {% else %}
+            <a href="{% url 'store:login' %}" class="login-btn">Đăng nhập</a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- NỘI DUNG -->
+{% block content %}
+{% endblock %}
+
+</body>
+</html>

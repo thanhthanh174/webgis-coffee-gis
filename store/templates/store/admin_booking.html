@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>CoffeeGIS - KATINAT - Admin</title>
+    <link rel="stylesheet" href="{% static 'store/ad_style.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'admin/images/logo-katinat.webp' %}">
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="topbar">
+    <a href="/store/admin" class="logo-link">
+        <div class="logo">
+            <img src="{% static 'admin/images/logo-katinat.webp' %}" class="logo-icon">
+            KATINAT CoffeeGIS
+        </div>
+    </a>
+    <nav>
+        <a href="/store/admin">Chi nhánh</a>
+        <a href="">Sản phẩm</a>
+        <a href="{% url 'store:admin_booking' %}">Đặt chỗ</a>
+        <a href="">Đánh giá</a>
+        {% if user.is_authenticated %}
+            <form method="POST" action="{% url 'store:logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="login-btn">Đăng xuất</button>
+            </form>
+        {% else %}
+            <a href="{% url 'store:login' %}" class="login-btn">Đăng nhập</a>
+        {% endif %}
+    </nav>
+</header>
+<h2>Quản lý đặt chỗ</h2>
+
+<table>
+    <tr>
+        <th>STT</th>
+        <th>Tên</th>
+        <th>SĐT</th>
+        <th>Chi nhánh</th>
+        <th>Thời gian</th>
+        <th>Action</th>
+    </tr>
+
+    {% for b in bookings %}
+    <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ b.name }}</td>
+        <td>{{ b.phone }}</td>
+        <td>{{ b.cafe.name }}</td>
+        <td>{{ b.time }}</td>
+        <td>
+            <form method="POST" action="{% url 'store:delete_booking' b.id %}" style="display:inline;"
+                onsubmit="return confirm('Bạn có chắc muốn xoá booking này không?');">
+                {% csrf_token %}
+                <button type="submit" class="action-btn delete-btn">Xoá</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-bottom">
+        © 2026 CoffeeGIS | LAP TRINH GIS | THANH - THI - THU.
+    </div>
+</footer>
+</body>
+</html>

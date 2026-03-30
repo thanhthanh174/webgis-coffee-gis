@@ -1,0 +1,112 @@
+/* ===== RESET ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+/* ===== PAGE ===== */
+body {
+    height: 100vh;
+    background: linear-gradient(135deg, #f6f1ea, #fdfaf6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ===== FORM BOX ===== */
+form {
+    background: #fff;
+    padding: 35px 30px;
+    border-radius: 18px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    width: 320px;
+    text-align: center;
+}
+
+/* ===== TITLE ===== */
+h2 {
+    margin-bottom: 20px;
+    color: #5a3e2b;
+}
+
+/* ===== LABEL ===== */
+label {
+    display: block;
+    text-align: left;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #444;
+}
+
+/* ===== INPUT ===== */
+input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    outline: none;
+    transition: 0.2s;
+}
+
+input:focus {
+    border-color: #c89b6d;
+}
+
+/* ===== LOGIN BUTTON ===== */
+button {
+    width: 100%;
+    margin-top: 15px;
+    padding: 12px;
+    background: #c89b6d;
+    border: none;
+    border-radius: 25px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #e6b980;
+    transform: translateY(-2px);
+}
+
+/* ===== TEXT ===== */
+.form-text {
+    margin-top: 18px;
+    font-size: 14px;
+    color: #666;
+}
+
+/* ===== REGISTER ===== */
+.register-link {
+    display: inline-block;
+    margin-top: 6px;
+    font-size: 17px;
+    font-weight: bold;
+    color: #c89b6d;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.register-link:hover {
+    color: #e6b980;
+    transform: scale(1.05);
+}
+
+/* ===== BACK ===== */
+.back-btn {
+    display: block;
+    margin-top: 14px;
+    font-size: 14px;
+    color: #5a3e2b;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.back-btn:hover {
+    color: #c89b6d;
+}

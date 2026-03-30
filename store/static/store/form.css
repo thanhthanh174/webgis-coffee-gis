@@ -2,16 +2,16 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Segoe UI", sans-serif;
+    font-family: 'Times New Roman', Times, serif;
 }
 
 body {
     padding-top: 70px;
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Times New Roman', Times, serif;
 }
 
-/* HEADER */
+/* ===== HEADER ===== */
 .topbar {
     position: fixed;
     top: 0;
@@ -21,33 +21,12 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-
-    background: rgba(15, 32, 39, 0.85); 
+    background: rgba(15, 32, 39, 0.9);
     backdrop-filter: blur(6px);
     z-index: 1000;
 }
 
-.topbar a {
-    color: #f5f5f5;
-    text-decoration: none;   
-    margin-left: 25px;
-    font-weight: 500;
-    transition: 0.3s;
-}
-
-.topbar a:hover {
-    color: #cfa36a; 
-}
-
-.logo-link {
-    text-decoration: none;
-    color: white;
-}
-
-.logo-link:hover {
-    color: #cfa36a;
-}
-
+/* LOGO */
 .logo {
     display: flex;
     align-items: center;
@@ -60,7 +39,49 @@ body {
 .logo-icon {
     width: 28px;
     height: 28px;
-    object-fit: contain;
+}
+
+/* ===== MENU ===== */
+.topbar nav {
+    display: flex;
+    align-items: center;
+    gap: 25px; /* 👈 khoảng cách đều giữa các mục */
+}
+
+/* LINK */
+.topbar a {
+    color: #f5f5f5;
+    text-decoration: none;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.topbar a:hover {
+    color: #cfa36a;
+}
+
+/* ===== FIX FORM LOGOUT ===== */
+.topbar form {
+    display: inline;
+    margin-left: 30px; /* 👈 đẩy nút logout ra xa */
+}
+
+/* ===== LOGIN / LOGOUT BUTTON ===== */
+.login-btn {
+    background: #c89b6d;
+    color: #fff;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* Hover */
+.login-btn:hover {
+    background: #e6b980;
+    transform: translateY(-1px);
 }
 
 /* ===== TRANG ĐẶT CHỖ ===== */

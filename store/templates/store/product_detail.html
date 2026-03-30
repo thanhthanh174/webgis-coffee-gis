@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>CoffeeGIS - KATINAT</title>
+    <link rel="stylesheet" href="{% static 'store/pd_detail.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'admin/images/logo-katinat.webp' %}">
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="topbar">
+    <a href="/store/" class="logo-link">
+        <div class="logo">
+            <img src="{% static 'admin/images/logo-katinat.webp' %}" class="logo-icon">
+            KATINAT CoffeeGIS
+        </div>
+    </a>
+
+    <nav class="menu">
+        <a href="/store/">Trang chủ</a>
+        <a href="/store/list/">Chi nhánh</a>
+        <a href="/">Bản đồ</a>
+
+        {% if user.is_authenticated %}
+            <form method="POST" action="{% url 'store:logout' %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="login-btn">Đăng xuất</button>
+            </form>
+        {% else %}
+            <a href="{% url 'store:login' %}" class="login-btn">Đăng nhập</a>
+        {% endif %}
+    </nav>
+</header>
+
+<div class="product-detail">
+
+    <img src="{{ product.image }}">
+
+    <div class="product-info">
+        <h1>{{ product.name }}</h1>
+        <p>{{ product.desc }}</p>
+        <a href="/store/" class="back-btn">← Quay lại</a>
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-bottom">
+        © 2026 CoffeeGIS | LAP TRINH GIS | THANH - THI - THU.
+    </div>
+</footer>
+</body>
+</html>

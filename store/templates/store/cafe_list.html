@@ -1,4 +1,5 @@
 {% load static %}
+{% csrf_token %}
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -16,27 +17,70 @@
             KATINAT CoffeeGIS
         </div>
     </a>
-    <nav>
+
+    <nav class="menu">
         <a href="/store/">Trang chủ</a>
         <a href="/store/list/">Chi nhánh</a>
-        <a href="{% url 'maps:map' %}">Bản đồ</a>
-    </nav>
+        <a href="/">Bản đồ</a>
+        {% if user.is_authenticated %}
+            <form method="POST" action="{% url 'store:logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="login-btn">Đăng xuất</button>
+            </form>
+        {% else %}
+            <a href="{% url 'store:login' %}" class="login-btn">Đăng nhập</a>
+        {% endif %}
 </header>
-
 
 <h2 class="page-title"></h2>
 
 <div class="cafe-list">
-{% for c in cafes %}
+{% for c in page_obj %}
     <div class="cafe-card">
-        <h3>{{ c.name }}</h3>
-        <p>{{ c.address }}</p>
-        <a href="{% url 'store:book_form' c.id %}" class="btn-book">Đặt chỗ</a>
+
+        <div class="img-wrapper">
+            {% if c.image %}
+                <img src="{{ c.image.url }}" class="cafe-img">
+            {% else %}
+                <img src="/static/images/default.jpg" class="cafe-img">
+            {% endif %}
+        </div>
+
+        <div class="cafe-info">
+            <h3>{{ c.name }}</h3>
+            <p>{{ c.address }}</p>
+
+            {% if user.is_authenticated %}
+                <a href="{% url 'store:book_form' c.id %}" class="btn-book">Đặt chỗ</a>
+            {% else %}
+                <a href="{% url 'store:login' %}" class="btn-book">Đăng nhập để đặt chỗ</a>
+            {% endif %}
+        </div>
+
     </div>
 {% endfor %}
 </div>
 
-<a href="{% url 'store:dashboard' %}" class="back-link">⬅ Quay lại</a>
+<!-- Phân trang -->
+<div class="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page=1" class="page-btn">«</a>
+        <a href="?page={{ page_obj.previous_page_number }}" class="page-btn">‹</a>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+            <span class="page-btn active">{{ num }}</span>
+        {% else %}
+            <a href="?page={{ num }}" class="page-btn">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="page-btn">›</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}" class="page-btn">»</a>
+    {% endif %}
+</div>
 
 <!-- FOOTER -->
 <footer class="footer">

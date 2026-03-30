@@ -26,6 +26,7 @@ function confirmBooking() {
 
 <body>
 <!-- HEADER -->
+<!-- HEADER -->
 <header class="topbar">
     <a href="/store/" class="logo-link">
         <div class="logo">
@@ -33,11 +34,19 @@ function confirmBooking() {
             KATINAT CoffeeGIS
         </div>
     </a>
-    <nav>
+
+    <nav class="menu">
         <a href="/store/">Trang chủ</a>
         <a href="/store/list/">Chi nhánh</a>
-        <a href="{% url 'maps:map' %}">Bản đồ</a>
-    </nav>
+        <a href="/">Bản đồ</a>
+        {% if user.is_authenticated %}
+            <form method="POST" action="{% url 'store:logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="login-btn">Đăng xuất</button>
+            </form>
+        {% else %}
+            <a href="{% url 'store:login' %}" class="login-btn">Đăng nhập</a>
+        {% endif %}
 </header>
 
 <div class="booking-page">

@@ -1,0 +1,14 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'store/delete_cf.css' %}">
+<div class="delete-box">
+    <h2>XÓA CHI NHÁNH</h2>
+
+    <p>Bạn có chắc muốn xoá <b>{{ cafe.name }}</b> không?</p>
+
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="delete-btn">Xoá</button>
+    </form>
+
+    <a href="{% url 'store:admin_dashboard' %}" class="cancel-link">Huỷ</a>
+</div>

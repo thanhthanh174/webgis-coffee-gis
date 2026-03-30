@@ -1,0 +1,92 @@
+/* ===== PAGE ===== */
+body {
+    background: url('/static/admin/images/bg.jpg') no-repeat center center;
+    background-size: cover;
+    font-family: 'Times New Roman', Times, serif;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ===== TITLE ===== */
+h2 {
+    position: absolute;
+    top: 80px;          
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;      
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5); 
+}
+
+/* ===== FORM ===== */
+form {
+    width: 400px;
+    background: #fff;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+/* LABEL */
+label {
+    font-weight: bold;
+    color: #444;
+}
+
+/* INPUT */
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    outline: none;
+    transition: 0.2s;
+}
+
+input:focus, textarea:focus {
+    border-color: #c89b6d;
+}
+
+/* FILE INPUT */
+input[type="file"] {
+    border: none;
+}
+
+/* BUTTON SAVE */
+button {
+    width: 100%;
+    padding: 12px;
+    background: #c89b6d;
+    border: none;
+    border-radius: 25px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #e6b980;
+    transform: translateY(-2px);
+}
+
+/* BACK LINK */
+.back-link {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    color: #5a3e2b;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.back-link:hover {
+    color: #c89b6d;
+}

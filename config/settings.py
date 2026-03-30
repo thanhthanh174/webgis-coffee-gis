@@ -142,3 +142,7 @@ STATICFILES_DIRS = [ BASE_DIR / "static" ]
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+# ===== LOGIN SETTINGS =====
+LOGIN_REDIRECT_URL = '/store/after-login/'  
+LOGOUT_REDIRECT_URL = '/store/' 

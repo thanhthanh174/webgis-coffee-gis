@@ -1,0 +1,29 @@
+{% load static %}
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>CoffeeGIS - KATINAT - Đăng nhập</title>
+    <link rel="stylesheet" href="{% static 'store/login.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'admin/images/logo-katinat.webp' %}">
+</head>
+<body>
+    <form method="POST">
+        <h2>Đăng nhập</h2>
+        {% csrf_token %}
+
+        <label>Username:</label>
+        <input type="text" name="username">
+
+        <label>Password:</label>
+        <input type="password" name="password">
+
+        <button type="submit">Đăng nhập</button>
+        
+        <p class="form-text">
+            Chưa có tài khoản?
+            <a href="{% url 'store:register' %}" class="register-link">Đăng ký</a>
+        </p>
+        <a href="{% url 'store:dashboard' %}" class="back-btn">⬅ Quay lại</a>
+    </form>
+</body>
+</html>

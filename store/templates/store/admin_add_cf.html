@@ -1,0 +1,25 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'store/add_cf.css' %}">
+<h2>THÊM QUÁN</h2>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <label>Tên quán:</label><br>
+    {{ form.name }}<br><br>
+
+    <label>Địa chỉ:</label><br>
+    {{ form.address }}<br><br>
+
+    <label>Ảnh:</label><br>
+    {{ form.image }}<br><br>
+
+    <label>Latitude:</label>
+    <input type="text" name="lat">
+
+    <label>Longitude:</label>
+    <input type="text" name="lng">
+
+    <button type="submit">Lưu</button>
+    <a href="{% url 'store:admin_dashboard' %}" class="back-link">⬅ Quay lại</a>
+</form>
