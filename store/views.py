@@ -116,17 +116,47 @@ def product_detail(request, id):
     products = {
         1: {
             "name": "Trà Olong Ba Lá",
-            "desc": "Cổ điển - Nồng nàn",
+            "desc": 
+
+            "Trà Olong Ba Lá là một thức uống mang đậm phong vị trà cao cấp, kết hợp giữa sự tinh tế của trà ô long và nét thanh mát của thiên nhiên vùng cao. "
+            "Lá trà được tuyển chọn kỹ lưỡng từ những đồi trà xanh mướt, nơi khí hậu mát mẻ giúp tạo nên hương vị trà đậm đà nhưng vẫn rất êm dịu.\n\n"
+
+            "Điểm đặc biệt của thức uống nằm ở sự cân bằng giữa vị chát nhẹ ban đầu và hậu vị ngọt thanh kéo dài. "
+            "Khi thưởng thức, người dùng sẽ cảm nhận được lớp hương trà sâu lắng, mang lại cảm giác thư giãn và dễ chịu.\n\n"
+
+            "Phần kem sữa được thêm vào một cách tinh tế, giúp làm mềm vị trà và tạo nên kết cấu mượt mà. "
+            "Đây là lựa chọn lý tưởng cho những ai yêu thích sự sang trọng và tinh tế trong từng ngụm trà.",
+
             "image": "/static/admin/images/olong-ba-la.jpg"
         },
+
         2: {
             "name": "Trà sữa Chôm Chôm",
-            "desc": "Ngọt thanh - Tươi mát",
+            "desc":
+
+            "Lấy cảm hứng từ trái chôm chôm nhiệt đới, thức uống này mang đến sự kết hợp độc đáo giữa vị trà sữa truyền thống và hương trái cây tươi mát. "
+            "Vị ngọt dịu nhẹ hòa quyện cùng độ béo của sữa tạo nên cảm giác dễ uống và hấp dẫn.\n\n"
+
+            "Điểm nhấn của món này là lớp topping chôm chôm giòn nhẹ, mang lại trải nghiệm thú vị khi thưởng thức. "
+            "Hương vị tươi mới giúp giải nhiệt hiệu quả trong những ngày nắng nóng.\n\n"
+
+            "Đây là lựa chọn hoàn hảo cho những ai yêu thích sự trẻ trung, mới lạ và muốn khám phá những hương vị độc đáo.",
+
             "image": "/static/admin/images/ts-chom-chom.jpg"
         },
+
         3: {
             "name": "Trà sữa Hồng D'ran",
-            "desc": "Đậm đà - Tinh tế",
+            "desc":
+
+            "Lấy cảm hứng từ vùng đất cao nguyên Đà Lạt, Trà sữa Hồng D'ran mang đến hương vị đậm đà và ấm áp. "
+            "Sự kết hợp giữa trà đen truyền thống và sữa béo tạo nên một tổng thể hài hòa và cuốn hút.\n\n"
+
+            "Vị trà mạnh mẽ kết hợp với độ ngọt vừa phải giúp thức uống trở nên cân bằng và dễ thưởng thức. "
+            "Hương thơm nhẹ nhàng mang lại cảm giác thư giãn và dễ chịu.\n\n"
+
+            "Đây là lựa chọn phù hợp cho những ai yêu thích phong cách cổ điển nhưng vẫn muốn trải nghiệm sự tinh tế hiện đại.",
+
             "image": "/static/admin/images/ts-hong-dran.jpg"
         }
     }
