@@ -5,10 +5,19 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.views import LoginView
-import json
 from django.shortcuts import redirect
+from streamlit import form
+from maps.models import Product
 from maps.models import Cafe, Booking
+from django.core.mail import send_mail
+from django.conf import settings
+from django.contrib import messages
+from django.shortcuts import redirect
+from django.http import HttpResponse
+from maps.models import Review
+from maps.models import Product
 
+import json
 
 # ===== REGISTER =====
 def register(request):
@@ -88,7 +97,6 @@ def cafe_list(request):
 
 
 # ===== BOOKING FORM =====
-@login_required(login_url='store:login')
 def book_form(request, cafe_id):
     cafe = get_object_or_404(Cafe, id=cafe_id)
     return render(request, "store/cafe_form.html", {"cafe": cafe})
@@ -96,19 +104,58 @@ def book_form(request, cafe_id):
 
 # ===== SUBMIT BOOKING =====
 def submit_booking(request):
-    if request.method == "POST":
-        cafe = Cafe.objects.get(id=request.POST["cafe_id"])
+    if request.method != "POST":
+        return redirect("store:dashboard")
 
-        Booking.objects.create(
-            cafe=cafe,
-            name=request.POST["name"],
-            phone=request.POST["phone"],
-            guests=request.POST['guests'],
-            date=request.POST["date"],
-            time=request.POST["time"],
+    try:
+        cafe_id = request.POST.get("cafe_id")
+        name = request.POST.get("name")
+        phone = request.POST.get("phone")
+        guests = request.POST.get("guests")
+        date = request.POST.get("date")
+        time = request.POST.get("time")
+        email = request.POST.get("email")
+
+        if not cafe_id or not name or not guests:
+            return HttpResponse("Thiếu dữ liệu!")
+
+        cafe = Cafe.objects.get(id=cafe_id)
+
+        booking = Booking.objects.create(
+            cafe_id=cafe,
+            name=name,
+            phone=phone,
+            guests=guests,
+            date=date,
+            time=time,
         )
 
+        # 🔥 GỬI MAIL
+        if email:
+            send_mail(
+                subject="Xác nhận đặt chỗ Katinat",
+                message=f"""
+Chào {name},
+
+Bạn đã đặt chỗ thành công tại {cafe.name} 🎉
+
+👥 Số người: {guests}
+📅 Ngày: {date}
+⏰ Thời gian: {time}
+
+Cảm ơn bạn!
+                """,
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[email],
+                fail_silently=True, 
+            )
+
+        # 🔥 THÀNH CÔNG → VỀ DASHBOARD
         return redirect("store:dashboard")
+
+    except Exception as e:
+        # 👉 in lỗi ra để debug
+        return HttpResponse(f"Lỗi: {e}")
 
 
 # ===== PRODUCT DETAIL =====
@@ -167,6 +214,71 @@ def product_detail(request, id):
         "product": product
     })
 
+def product_list(request):
+    products = Product.objects.all()
+    return render(request, 'store/admin_product_list.html', {
+        'products': products
+    })
+
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['cafe', 'name', 'description', 'price', 'image']
+
+@login_required(login_url='store:login')
+def add_product(request):
+    if not request.user.is_staff:
+        return redirect('store:dashboard')
+
+    form = ProductForm(request.POST or None, request.FILES or None)
+
+    if form.is_valid():
+        form.save()
+        return redirect('store:admin_product')
+
+    return render(request, 'store/admin_add_pd.html', {'form': form})
+
+# USER
+def product_list(request):
+    products = Product.objects.all()
+    return render(request, "store/products.html", {"products": products})
+
+@login_required(login_url='store:login')
+# ADMIN
+def admin_product(request):
+    products = Product.objects.all()
+    return render(request, "store/admin_product.html", {"products": products})
+
+@login_required(login_url='store:login')
+def delete_product(request, id):
+    product = get_object_or_404(Product, id=id)
+
+    if request.method == "POST":
+        product.delete()
+        return redirect('store:admin_product')
+
+    return render(request, "store/admin_delete_pd.html", {
+        "product": product
+    })
+
+@login_required(login_url='store:login')
+def edit_product(request, id):
+    product = get_object_or_404(Product, id=id)
+    form = ProductForm(instance=product)
+
+    return render(request, "store/admin_edit_pd.html", {
+        "form": form,
+        "product": product
+    })
+
+def cafe_detail(request, id):
+    cafe = Cafe.objects.get(id=id)
+    products = cafe.products.all()  # 🔥 lấy sản phẩm theo quán
+
+    return render(request, "store/cafe_detail.html", {
+        "cafe": cafe,
+        "products": products
+    })
 
 # ===== FORM CAFE =====
 class CafeForm(forms.ModelForm):
@@ -174,6 +286,23 @@ class CafeForm(forms.ModelForm):
         model = Cafe
         fields = ['name', 'address', 'image', 'lat', 'lng']
 
+
+@login_required(login_url='store:login')
+def admin_dashboard(request):
+    if not request.user.is_staff:
+        return redirect('store:dashboard')
+
+    cafes = Cafe.objects.all()
+
+    # 🔥 SEARCH
+    q = request.GET.get('q')
+    if q:
+        cafes = cafes.filter(name__icontains=q)
+
+    return render(request, 'store/admin_dashboard.html', {
+        'cafes': cafes,
+        'q': q
+    })
 
 # ===== ADD CAFE =====
 @login_required(login_url='store:login')
@@ -220,6 +349,7 @@ def delete_cafe(request, id):
         return redirect('store:admin_dashboard')
 
     return render(request, 'store/admin_confirm_delete.html', {'cafe': cafe})
+    
 
 
 # ===== ADMIN BOOKING =====
@@ -228,8 +358,17 @@ def admin_booking(request):
     if not request.user.is_staff:
         return redirect('store:dashboard')
 
-    bookings = Booking.objects.all().order_by('-time')
-    return render(request, 'store/admin_booking.html', {'bookings': bookings})
+    bookings = Booking.objects.all().order_by('-date', '-time')
+
+    # 🔥 FILTER THEO NGÀY
+    date = request.GET.get('date')
+    if date:
+        bookings = bookings.filter(date=date)
+
+    return render(request, 'store/admin_booking.html', {
+        'bookings': bookings,
+        'selected_date': date
+    })
 
 
 # ===== DELETE BOOKING =====
@@ -245,3 +384,39 @@ def delete_booking(request, id):
         return redirect('store:admin_booking')
 
     return redirect('store:admin_booking')
+
+def home(request):
+    cafes = Cafe.objects.all()
+
+    return render(request, 'dashboard.html', {
+        'cafes': cafes
+    })
+
+@login_required(login_url='store:login')
+def admin_review(request):
+    if not request.user.is_staff:
+        return redirect('store:dashboard')
+
+    reviews = Review.objects.select_related('cafe').all().order_by('-created_at')
+    cafes = Cafe.objects.all()
+
+    # 🔥 FILTER
+    cafe_id = request.GET.get('cafe')
+    if cafe_id:
+        reviews = reviews.filter(cafe_id=cafe_id)
+
+    return render(request, 'store/admin_review.html', {
+        'reviews': reviews,
+        'cafes': cafes,
+        'selected_cafe': cafe_id
+    })
+
+@login_required(login_url='store:login')
+def delete_review(request, id):
+    if not request.user.is_staff:
+        return redirect('store:dashboard')
+
+    review = get_object_or_404(Review, id=id)
+
+    review.delete()
+    return redirect('store:admin_review')

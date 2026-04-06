@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sản phẩm - Katinat Coffee & Tea House</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'store/pd.css' %}">
+</head>
+<body>
+
+    <header class="topbar">
+        <a href="/store/" class="logo-link">
+            <div class="logo">
+                <img src="{% static 'admin/images/logo-katinat.webp' %}" class="logo-icon">
+                KATINAT Coffee
+            </div>
+        </a>
+
+        <nav class="menu">
+            <a href="/store/">Trang chủ</a>
+            <a href="/store/product_list" class="{% if request.path == '/store/product_list' %}active{% endif %}">
+                Sản phẩm
+            </a>
+            <a href="/store/list/">Chi nhánh</a>
+            <a href="/">Bản đồ</a>
+            {% if user.is_authenticated %}
+                <form method="POST" action="{% url 'store:logout' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="login-btn">Đăng xuất</button>
+                </form>
+            {% else %}
+                <a href="{% url 'store:login' %}" class="login-btn">Đăng nhập</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Menu của KATINAT</h1>
+            <div class="gold-divider"></div>
+        </div>
+
+        <div class="row g-5">
+            {% for p in products %}
+            <div class="col-md-4">
+                <div class="card product-card text-center">
+                    <div class="img-container">
+                        {% if p.image %}
+                            <img src="{{ p.image.url }}" class="product-img" alt="{{ p.name }}">
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="product-name">{{ p.name }}</h5>
+                        <p class="product-price">{{ p.price }} VNĐ</p>
+                        <button class="btn btn-luxury" data-bs-toggle="modal" data-bs-target="#descModal{{ p.id }}">
+                            Khám phá mỹ vị
+                        </button>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="descModal{{ p.id }}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content text-center">
+                            <div class="p-3 d-flex justify-content-end">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-header border-0 d-block">
+                                <h5 class="modal-title">{{ p.name }}</h5>
+                                <div class="gold-divider" style="width: 50px;"></div>
+                            </div>
+                            <div class="modal-body">
+                                {{ p.description|linebreaksbr|default:'Một tuyệt tác hương vị đang chờ bạn khám phá.' }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <footer class="footer">
+    <div class="footer-bottom">
+        © 2026 CoffeeGIS | LAP TRINH GIS | THANH - THI - THU.
+    </div>
+</footer>
+</body>
+</html>

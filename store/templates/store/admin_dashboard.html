@@ -15,14 +15,16 @@
     <a href="/store/admin" class="logo-link">
         <div class="logo">
             <img src="{% static 'admin/images/logo-katinat.webp' %}" class="logo-icon">
-            KATINAT CoffeeGIS
+            KATINAT Coffee - Admin
         </div>
     </a>
     <nav>
-        <a href="/store/admin">Chi nhánh</a>
-        <a href="">Sản phẩm</a>
+        <a href="/store/admin" class="{% if request.path == '/store/admin' %}active{% endif %}">
+            Chi nhánh
+        </a>
+        <a href="{% url 'store:admin_product' %}">Sản phẩm</a>
         <a href="{% url 'store:admin_booking' %}">Đặt chỗ</a>
-        <a href="">Đánh giá</a>
+        <a href="{% url 'store:admin_review' %}">Đánh giá</a>
         {% if user.is_authenticated %}
             <form method="POST" action="{% url 'store:logout' %}">
                 {% csrf_token %}
@@ -37,6 +39,14 @@
 <h2>Quản lý chi nhánh</h2>
 
 <a href="{% url 'store:add_cafe' %}" class="add-btn">+ Thêm quán</a>
+
+<div class="search-container">
+    <form method="GET" class="search-form">
+        <input type="text" name="q" placeholder="🔍 Nhập tên quán..." value="{{ q }}">
+        <button type="submit">Tìm</button>
+        <a href="{% url 'store:admin_dashboard' %}" class="reset-btn">Reset</a>
+    </form>
+</div>
 
 <div class="table-container">
 <table>

@@ -14,15 +14,15 @@
     <a href="/store/" class="logo-link">
         <div class="logo">
             <img src="{% static 'admin/images/logo-katinat.webp' %}" class="logo-icon">
-            KATINAT CoffeeGIS
+            KATINAT Coffee
         </div>
     </a>
 
     <nav class="menu">
         <a href="/store/">Trang chủ</a>
+        <a href="{% url 'store:product_list' %}">Sản phẩm</a>
         <a href="/store/list/">Chi nhánh</a>
         <a href="/">Bản đồ</a>
-
         {% if user.is_authenticated %}
             <form method="POST" action="{% url 'store:logout' %}" style="display:inline;">
                 {% csrf_token %}

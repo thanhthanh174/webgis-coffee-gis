@@ -3,7 +3,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Bản đồ quán cà phê</title>
+<title>Bản đồ quán cà phê - KATINAT</title>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css"/>
@@ -11,290 +11,293 @@
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <style>
-/* ===== NAVBAR ===== */
-.navbar {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    height: 70px;
-    background: #2f3e46;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 40px;
-    z-index: 2000;
-    box-sizing: border-box;
-}
-
-/* MENU */
-.menu {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.menu a {
-    color: white;
-    text-decoration: none;
-    font-size: 16px;
-    white-space: nowrap;
-}
-
-/* ===== MAP ===== */
-.map-container {
-    position: relative;
-    margin-top: 70px;
-}
-
-/* ===== HEADER ===== */
-.topbar {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    height: 70px;
-    padding: 0 50px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(15, 32, 39, 0.9);
-    backdrop-filter: blur(6px);
-    z-index: 1000;
-}
-
-/* LOGO */
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 22px;
-    font-weight: bold;
-    color: #fff;
-}
-
-.logo-icon {
-    width: 28px;
-    height: 28px;
-}
-
-/* ===== MENU ===== */
-.topbar nav {
-    display: flex;
-    align-items: center;
-    gap: 25px; /* 👈 khoảng cách đều giữa các mục */
-}
-
-/* LINK */
-.topbar a {
-    color: #f5f5f5;
-    text-decoration: none;
-    font-size: 16px;
-    transition: 0.3s;
-}
-
-.topbar a:hover {
-    color: #cfa36a;
-}
-
-/* ===== FIX FORM LOGOUT ===== */
-.topbar form {
-    display: inline;
-    margin-left: 30px; /* 👈 đẩy nút logout ra xa */
-}
-
-/* ===== LOGIN / LOGOUT BUTTON ===== */
-.login-btn {
-    background: #c89b6d;
-    color: #fff;
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 14px;
-    border: none;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-/* Hover */
-.login-btn:hover {
-    background: #e6b980;
-    transform: translateY(-1px);
-}
-
-/* ===== INFO BOX (BÊN PHẢI) ===== */
-.info-box {
-    position: absolute;
-    top: 90px;
-    right: 20px;
-    width: 320px;
-    background: #fff;
-    padding: 15px;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-    z-index: 1000;
-    display: none;
-    max-height: 80vh;
-    overflow-y: auto;
-    z-index: 1000;
-}
-
-/* ===== FILTER PANEL (BÊN TRÁI) ===== */
-.filter-panel {
-    position: absolute;
-    top: 90px;
-    left: 20px;
-    background: white;
-    padding: 15px;
-    border-radius: 12px;
-    z-index: 1000;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-    width: 250px;
-}
-
-/* ===== ROUTING PANEL ===== */
-.leaflet-routing-container {
-    position: absolute !important;
-    bottom: 20px !important;
-    left: 20px !important;
-    z-index: 900 !important;
-    max-width: 300px;
-    background: white;
-}
-
-/* ===== ZOOM BUTTON (+ -) ===== */
-.leaflet-control-zoom {
-    top: auto !important;
-    bottom: 200px !important;  
-    left: 10px !important;
-    z-index: 900;
-}
-
-/* ===== BUTTON ===== */
-.transport button,
-.gis-btn {
-    margin: 5px 2px;
-    cursor: pointer;
-    padding: 8px 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    transition: 0.2s;
-}
-
-.transport button:hover,
-.gis-btn:hover {
-    background: #eee;
-}
-
-.btn-primary {
-    background: #007bff;
-    color: white;
-    border: none;
-    width: 100%;
-    margin-top: 5px;
-}
-
-.btn-success {
-    background: #28a745;
-    color: white;
-    border: none;
-    width: 100%;
-    margin-top: 5px;
-}
-
-/* ===== REVIEW ===== */
-.review-box {
-    max-height: 150px;
-    overflow: auto;
-    border: 1px solid #ddd;
-    padding: 6px;
-    margin-top: 6px;
-    font-size: 0.9em;
-    border-radius: 6px;
-}
-
-/* INPUT */
-input, textarea {
-    width: 100%;
-    margin-top: 5px;
-    padding: 8px;
-    box-sizing: border-box;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
-    .info-box {
-        width: 90%;
-        right: 5%;
+    .body {
+        font-family: 'Playfair Display', serif;
+    }
+    .topbar {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        height: 70px;
+        padding: 0 50px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(15, 32, 39, 0.9);
+        backdrop-filter: blur(6px);
+        z-index: 1000;
+        box-sizing: border-box;
     }
 
+    /* LOGO */
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 22px;
+        font-weight: bold;
+        color: #fff;
+    }
+
+    .logo-icon {
+        width: 28px;
+        height: 28px;
+    }
+
+    /* ===== MENU ===== */
+    .topbar nav {
+        display: flex;
+        align-items: center;
+        gap: 25px; 
+    }
+
+    /* LINK */
+    .topbar a {
+        color: #f5f5f5;
+        text-decoration: none;
+        font-size: 16px;
+        transition: 0.3s;
+    }
+
+    .topbar a:hover {
+        color: #cfa36a;
+    }
+
+    /* ===== FIX FORM LOGOUT ===== */
+    .topbar form {
+        display: inline;
+        margin-left: 10px;
+    }
+
+    /* ===== LOGIN / LOGOUT BUTTON ===== */
+    .login-btn {
+        background: #c89b6d;
+        color: #fff;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        border: none;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .login-btn:hover {
+        background: #e6b980;
+        transform: translateY(-1px);
+    }
+
+    /* ===== MAP ===== */
+    .map-container {
+        position: relative;
+        margin-top: 70px;
+    }
+
+    /* ===== INFO BOX ===== */
+    .info-box {
+        position: absolute;
+        top: 90px;
+        right: 20px;
+        width: 320px;
+        background: #fff;
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        z-index: 1000;
+        display: none;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+
+    /* ===== FILTER PANEL ===== */
     .filter-panel {
-        width: 90%;
-        left: 5%;
+        position: absolute;
+        top: 90px;
+        left: 20px;
+        background: white;
+        padding: 15px;
+        border-radius: 12px;
+        z-index: 1000;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        width: 250px;
+        max-height: 70vh;
+        overflow-y: auto;
     }
 
     .leaflet-routing-container {
-        width: 90% !important;
-        left: 5% !important;
+        position: absolute !important;
+        bottom: 20px !important;
+        left: 20px !important;
+        z-index: 900 !important;
+        max-width: 300px;
+        background: white;
     }
-}
+
+    .leaflet-control-zoom {
+        top: auto !important;
+        bottom: 200px !important;  
+        left: 10px !important;
+        z-index: 900;
+    }
+
+    .transport button, .gis-btn {
+        margin: 5px 2px;
+        cursor: pointer;
+        padding: 8px 10px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        transition: 0.2s;
+    }
+
+    .btn-primary { background: #007bff; color: white; border: none; width: 100%; margin-top: 5px; }
+    .btn-success { background: #28a745; color: white; border: none; width: 100%; margin-top: 5px; }
+
+    .review-box {
+        max-height: 150px;
+        overflow: auto;
+        border: 1px solid #ddd;
+        padding: 6px;
+        margin-top: 6px;
+        font-size: 0.9em;
+        border-radius: 6px;
+    }
+
+    input, textarea {
+        width: 100%;
+        margin-top: 5px;
+        padding: 8px;
+        box-sizing: border-box;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+    }
+
+    .tabs { display: flex; margin-top: 10px; border-bottom: 1px solid #ddd; }
+    .tab-btn { flex: 1; padding: 8px; border: none; background: #eee; cursor: pointer; font-weight: bold; }
+    .tab-btn.active { background: #007bff; color: white; }
+    .tab-content { display: none; margin-top: 10px; }
+    .tab-content.active { display: block; }
+
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        border: none;
+        background: #eee;
+        border-radius: 50%;
+        width: 28px;
+        height: 28px;
+        cursor: pointer;
+    }
+
+    .route-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        width: 100%;
+        padding: 10px;
+        margin-top: 8px;
+        background: #1a73e8;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .search-box {
+        position: absolute;
+        top: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 2000;
+    }
+
+    .search-box input {
+        width: 300px;
+        padding: 10px 15px;
+        border-radius: 25px;
+        border: 1px solid #ccc;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
 </style>
 </head>
 
 <body>
-    <div class="navbar">
-    <b>KATINAT CoffeeGIS</b>
-    <div class="menu">
-        <a href="/store/">Trang chủ</a>
-        <a href="/store/list/">Chi nhánh</a>
-        <a href="/">Bản đồ</a>
-        {% if user.is_authenticated %}
-            <form method="POST" action="{% url 'store:logout' %}">
-                {% csrf_token %}
-                <button type="submit" class="login-btn">Đăng xuất</button>
-            </form>
-        {% else %}
-            <a href="{% url 'store:login' %}" class="login-btn">Đăng nhập</a>
-        {% endif %}
-    </div>
+    <header class="topbar">
+        <a href="/store/" class="logo-link" style="text-decoration: none;">
+            <div class="logo">
+                <img src="{% static 'admin/images/logo-katinat.webp' %}" class="logo-icon">
+                KATINAT Coffee
+            </div>
+        </a>
+
+        <nav class="menu">
+            <a href="/store/">Trang chủ</a>
+            <a href="{% url 'store:product_list' %}">Sản phẩm</a>
+            <a href="/store/list/">Chi nhánh</a>
+            <a href="/" class="{% if request.path == '/' %}active{% endif %}">
+                Bản đồ
+            </a>
+            {% if user.is_authenticated %}
+                <form method="POST" action="{% url 'store:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="login-btn">Đăng xuất</button>
+                </form>
+            {% else %}
+                <a href="{% url 'store:login' %}" class="login-btn">Đăng nhập</a>
+            {% endif %}
+        </nav>
+    </header>
+
+<div class="search-box">
+    <input type="text" id="searchInput" placeholder="Nhập tên hoặc tọa độ...">
 </div>
 <div id="map" style="width:100%; height:100vh;"></div>
 
-<div class="filter-panel">
-    <b>🔎 Lọc quán theo bán kính (km)</b>
-    <input type="number" id="radiusInput" placeholder="Nhập km (vd: 2, 5...)" step="0.5">
-    <button onclick="filterByRadius()" class="btn-primary" style="margin-top:5px; padding:5px;">🎯 Lọc ngay</button>
-<button onclick="showAllCafes()" class="btn-success" style="margin-top:5px; padding:5px;">👀 Hiện tất cả</button>
-</div>
-
 <div class="info-box" id="infoBox">
-    <h3 id="cafeName" style="margin-top:0;"></h3>
-    <img id="cafeImage" style="width:100%;height:160px;object-fit:cover;border-radius:8px;display:none;margin-bottom:10px;">
-    <p id="cafeAddress" style="color:#666; font-size:0.9em;"></p>
-    
-    <p>🕒 <b>Giờ mở cửa:</b> <span id="openingHours"></span></p>
+    <button class="close-btn" onclick="closeInfo()">✖</button>
+    <h3 id="cafeName"></h3>
+    <img id="cafeImage" style="width:100%;height:160px;object-fit:cover;border-radius:8px;display:none;">
+    <p id="cafeAddress" class="address"></p>
+    <p id="cafeCoords" style="font-size: 0.9em; color: #555;"></p>
 
-    <p>📏 Khoảng cách: <span id="distance"></span> km</p>
-    <p>⏱ Thời gian: <span id="duration"></span> phút</p>
-
-    <div class="transport">
-        <b>Phương tiện:</b>
-        <button id="walkBtn">🚶</button>
-        <button id="bikeBtn">🏍</button>
-        <button id="carBtn">🚗</button>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('infoTab')">📍 Thông tin</button>
+        <button class="tab-btn" onclick="switchTab('reviewTab')">⭐ Đánh giá</button>
+        <button class="tab-btn" onclick="switchTab('filterTab')">🔎 Lọc vị trí</button>
     </div>
 
-    <button id="routeBtn" class="btn-primary" style="margin-top:10px;">📍 Chỉ đường</button>
-    <button id="nearestBtn" class="btn-success" style="margin-top:5px;">🚩 Tìm quán gần nhất</button>
+    <div id="infoTab" class="tab-content active">
+        <p>🕒 <b>Giờ mở cửa:</b> <span id="openingHours"></span></p>
+        <p>📏 Khoảng cách: <span id="distance"></span> km</p>
+        <p>⏱ Thời gian: <span id="duration"></span> phút</p>
+        <div class="transport">
+            <button id="walkBtn">🚶</button>
+            <button id="bikeBtn">🏍</button>
+            <button id="carBtn">🚗</button>
+        </div>
+        <button id="routeBtn" class="route-btn">➤ Đường đi</button>
+        <button id="nearestBtn" class="btn-success">🚩 Gần nhất</button>
+    </div>
 
-    <hr>
-    <b>⭐ Đánh giá</b>
-    <p>⭐ Trung bình: <span id="avgRating">0</span>/5</p>
-    <div id="reviewList" class="review-box"></div>
-<input id="reviewName" placeholder="Tên của bạn">
-    <input id="reviewRating" type="number" min="1" max="5" placeholder="Số sao (1-5)">
-    <textarea id="reviewComment" placeholder="Nhận xét của bạn..."></textarea>
-    <button id="sendReview" class="btn-primary" style="margin-top:8px;">Gửi đánh giá</button>
+    <div id="reviewTab" class="tab-content">
+        <p>⭐ Trung bình: <span id="avgRating">0</span>/5</p>
+        <div id="reviewList" class="review-box"></div>
+        <input id="reviewName" placeholder="Tên của bạn">
+        <input id="reviewRating" type="number" min="1" max="5" placeholder="Số sao">
+        <textarea id="reviewComment" placeholder="Nhận xét..."></textarea>
+        <button id="sendReview" class="btn-primary">Gửi đánh giá</button>
+    </div>
+
+    <div id="filterTab" class="tab-content">
+        <b>🔎 Lọc theo bán kính (km)</b>
+        <input type="number" id="radiusInput" placeholder="Nhập km..." step="0.5">
+        <button onclick="filterByRadius()" class="btn-primary">🎯 Lọc ngay</button>
+        <button onclick="showAllCafes()" class="btn-success">👀 Hiện tất cả</button>
+        <hr>
+        <p id="totalResult">Chưa lọc</p>
+        <ul id="listResult"></ul>
+    </div>
 </div>
 
 <script id="cafes-data" type="application/json">
@@ -307,88 +310,67 @@ input, textarea {
 <script>
 let cafes = JSON.parse(document.getElementById("cafes-data").textContent || "[]");
 let map = L.map('map').setView([10.77, 106.68], 12);
+let searchMarker = null;
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-let userLat=null;
-let userLng=null;
-let selectedCafe=null;
-let routingControl=null;
-let currentMode="walk";
-let cafeMarkers=[];
+let userLat=null; let userLng=null; let selectedCafe=null;
+let routingControl=null; let currentMode="walk"; let cafeMarkers=[];
 
-const cafeIcon=L.icon({
-    iconUrl:"https://maps.gstatic.com/mapfiles/ms2/micons/coffeehouse.png",
-    iconSize:[32,32]
-});
+const cafeIcon=L.icon({ iconUrl:"https://maps.gstatic.com/mapfiles/ms2/micons/coffeehouse.png", iconSize:[32,32] });
+const userIcon = L.icon({ iconUrl: "https://maps.google.com/mapfiles/ms/icons/red-dot.png", iconSize: [32, 32], iconAnchor: [16, 32] });
 
-// Lấy vị trí người dùng
 navigator.geolocation.getCurrentPosition(pos=>{
-    userLat=pos.coords.latitude;
-    userLng=pos.coords.longitude;
-    L.marker([userLat,userLng], {title: "Vị trí của bạn"}).addTo(map);
+    userLat=pos.coords.latitude; userLng=pos.coords.longitude;
+    L.marker([userLat,userLng], { title: "Vị trí của bạn", icon: userIcon }).addTo(map);
     map.setView([userLat,userLng],13);
-}, err => {
-    alert("Vui lòng bật GPS để sử dụng tính năng GIS!");
-});
+}, err => { alert("Vui lòng bật GPS!"); });
 
-// Hiển thị markers
 cafes.forEach(cafe=>{
     const marker=L.marker([cafe.lat,cafe.lng],{icon:cafeIcon}).addTo(map);
     cafeMarkers.push({cafe, marker});
-
     marker.on("click",()=>{
         selectedCafe=cafe;
         document.getElementById("infoBox").style.display="block";
         document.getElementById("cafeName").innerText=cafe.name;
-        document.getElementById("cafeAddress").innerText=cafe.address;
-document.getElementById("openingHours").innerText=cafe.opening_hours || "08:00 - 22:00";
-
+        document.getElementById("cafeCoords").innerText ="📍 Tọa độ: " + cafe.lat + ", " + cafe.lng;
+        document.getElementById("openingHours").innerText=cafe.opening_hours || "08:00 - 22:00";
         if(cafe.image){
             let img=document.getElementById("cafeImage");
-            img.src=cafe.image;
-            img.style.display="block";
-        } else {
-            document.getElementById("cafeImage").style.display="none";
-        }
-
-        updateDistanceTime();
-        loadReviews();
+            img.src=cafe.image; img.style.display="block";
+        } else { document.getElementById("cafeImage").style.display="none"; }
+        updateDistanceTime(); loadReviews();
     });
 });
 
-// Hàm tính khoảng cách
 function haversine(lat1,lon1,lat2,lon2){
     const R=6371;
     const dLat=(lat2-lat1)*Math.PI/180;
     const dLon=(lon2-lon1)*Math.PI/180;
-    const a=Math.sin(dLat/2)**2+
-        Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+    const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
     return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
 }
 
-// Lọc theo bán kính 
 function filterByRadius() {
     let r = parseFloat(document.getElementById("radiusInput").value);
-    if(isNaN(r) || userLat === null) {
-        alert("Nhập số km và bật vị trí!");
-        return;
-    }
+    if (isNaN(r) || userLat === null) { alert("Nhập số km!"); return; }
+    let filtered = [];
     cafeMarkers.forEach(item => {
         let d = haversine(userLat, userLng, item.cafe.lat, item.cafe.lng);
-        if(d <= r) map.addLayer(item.marker);
-else map.removeLayer(item.marker);
+        if (d <= r) { map.addLayer(item.marker); filtered.push(item.cafe); } else { map.removeLayer(item.marker); }
     });
+    document.getElementById("totalResult").innerText = `☕ Có ${filtered.length} quán trong bán kính ${r} km`;
 }
 
 function showAllCafes() {
     cafeMarkers.forEach(item => map.addLayer(item.marker));
+    document.getElementById("totalResult").innerText = "Hiển thị tất cả quán";
 }
 
 function updateDistanceTime(){
     if(!selectedCafe||userLat===null)return;
     const dist=haversine(userLat,userLng,selectedCafe.lat,selectedCafe.lng);
-    let speed=4; // đi bộ
+    let speed=4; 
     if(currentMode==="bike") speed=20;
     if(currentMode==="car") speed=35;
     const time=(dist/speed)*60;
@@ -400,39 +382,39 @@ document.getElementById("walkBtn").onclick=()=>{currentMode="walk";updateDistanc
 document.getElementById("bikeBtn").onclick=()=>{currentMode="bike";updateDistanceTime();}
 document.getElementById("carBtn").onclick=()=>{currentMode="car";updateDistanceTime();}
 
-document.getElementById("routeBtn").onclick=()=>{
-    if(!selectedCafe||userLat===null)return;
-    if(routingControl) map.removeControl(routingControl);
-    routingControl=L.Routing.control({
-        waypoints:[L.latLng(userLat,userLng), L.latLng(selectedCafe.lat,selectedCafe.lng)],
-        lineOptions: { styles: [{ color: 'blue', opacity: 0.6, weight: 6 }] }
+document.getElementById("routeBtn").onclick = () => {
+    if (routingControl) {
+        map.removeControl(routingControl);
+        routingControl = null;
+        document.getElementById("routeBtn").innerText = "➤ Đường đi";
+        return;
+    }
+    if (!selectedCafe || userLat === null) return;
+    routingControl = L.Routing.control({
+        waypoints: [L.latLng(userLat, userLng), L.latLng(selectedCafe.lat, selectedCafe.lng)],
+        createMarker: function(i, wp) { return i === 0 ? L.marker(wp.latLng, { icon: userIcon }) : L.marker(wp.latLng, { icon: cafeIcon }); },
+        lineOptions: { styles: [{ color: '#1a73e8', opacity: 0.7, weight: 6 }] }
     }).addTo(map);
+    document.getElementById("routeBtn").innerText = "❌ Tắt đường";
 };
 
 document.getElementById("nearestBtn").onclick=()=>{
     if(userLat===null)return;
-    let nearest=null;
-    let min=Infinity;
+    let nearest=null; let min=Infinity;
     cafeMarkers.forEach(item=>{
         const d=haversine(userLat,userLng,item.cafe.lat,item.cafe.lng);
         if(d<min){min=d;nearest=item;}
     });
-    if(nearest) {
-        map.setView([nearest.cafe.lat,nearest.cafe.lng],16);
-        nearest.marker.fire('click');
-    }
+    if(nearest) { map.setView([nearest.cafe.lat,nearest.cafe.lng],16); nearest.marker.fire('click'); }
 };
 
-// LOGIC ĐÁNH GIÁ 
 function loadReviews(){
     fetch(`/api/review/${selectedCafe.id}/`)
     .then(res=>res.json())
     .then(data=>{
         document.getElementById("avgRating").innerText=data.avg_rating || 0;
-let html="";
-        data.reviews.forEach(r=>{
-            html+=`<p><b>${r.name}</b> ⭐${r.rating}<br>${r.comment}</p><hr>`;
-        });
+        let html="";
+        data.reviews.forEach(r=>{ html+=`<p><b>${r.name}</b> ⭐${r.rating}<br>${r.comment}</p><hr>`; });
         document.getElementById("reviewList").innerHTML=html||"Chưa có đánh giá";
     });
 }
@@ -440,36 +422,48 @@ let html="";
 document.getElementById("sendReview").onclick=()=>{
     const name = document.getElementById("reviewName").value;
     const star = document.getElementById("reviewRating").value;
-    if(!name || !star) { alert("Nhập đủ tên và số sao!"); return; }
-    
+    if(!name || !star) { alert("Nhập đủ thông tin!"); return; }
     fetch("/api/review/add/",{
         method:"POST",
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
-            cafe_id:selectedCafe.id,
-            name:name,
-            rating:star,
+            cafe_id:selectedCafe.id, name:name, rating:star,
             comment:document.getElementById("reviewComment").value
         })
-    })
-    .then(()=> {
-        loadReviews();
-        document.getElementById("reviewName").value = "";
-        document.getElementById("reviewRating").value = "";
-        document.getElementById("reviewComment").value = "";
-    });
+    }).then(()=> { loadReviews(); });
 };
 
-const params = new URLSearchParams(window.location.search);
-const lat = params.get("lat");
-const lon = params.get("lon");
-
-if(lat && lon){
-    map.setView([lat, lon], 16);
-    L.marker([lat, lon]).addTo(map);
+function switchTab(tabId){
+    document.querySelectorAll(".tab-content").forEach(tab=>tab.classList.remove("active"));
+    document.querySelectorAll(".tab-btn").forEach(btn=>btn.classList.remove("active"));
+    document.getElementById(tabId).classList.add("active");
+    event.target.classList.add("active");
 }
 
+function closeInfo(){ document.getElementById("infoBox").style.display = "none"; }
+
+function searchLocation(){
+    let input = document.getElementById("searchInput").value.toLowerCase();
+    if(!input) return;
+    let found = cafes.find(cafe => cafe.name.toLowerCase().includes(input));
+    if(found){
+        map.setView([found.lat, found.lng], 16);
+        let target = cafeMarkers.find(m => m.cafe === found);
+        if(target) target.marker.fire("click");
+        return;
+    }
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${input}`)
+    .then(res => res.json())
+    .then(data => {
+        if(data.length > 0){
+            let lat = data[0].lat; let lon = data[0].lon;
+            map.setView([lat, lon], 16);
+            if(searchMarker) map.removeLayer(searchMarker);
+            searchMarker = L.marker([lat, lon]).addTo(map).bindPopup("📍 " + input).openPopup();
+        }
+    });
+}
+document.getElementById("searchInput").addEventListener("keypress", e => { if(e.key === "Enter") searchLocation(); });
 </script>
 </body>
 </html>
-

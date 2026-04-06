@@ -11,15 +11,18 @@
 function confirmBooking() {
     const name = document.querySelector("input[name='name']").value;
     const guests = document.querySelector("input[name='guests']").value;
+    const email = document.querySelector("input[name='email']").value;
+    const date = document.querySelector("input[name='date']").value;
+    const time = document.querySelector("input[name='time']").value;
 
-    if (!name || !guests) {
+    if (!name || !guests || !email || !date || !time) {
         alert("Vui lòng nhập đầy đủ thông tin!");
         return;
     }
 
     const ok = confirm("Bạn chắc chắn muốn đặt chỗ không?");
     if (ok) {
-        document.querySelector("form").submit();
+        document.getElementById("bookingForm").submit();
     }
 }
 </script>
@@ -31,12 +34,13 @@ function confirmBooking() {
     <a href="/store/" class="logo-link">
         <div class="logo">
             <img src="{% static 'admin/images/logo-katinat.webp' %}" class="logo-icon">
-            KATINAT CoffeeGIS
+            KATINAT Coffee
         </div>
     </a>
 
     <nav class="menu">
         <a href="/store/">Trang chủ</a>
+        <a href="{% url 'store:product_list' %}">Sản phẩm</a>
         <a href="/store/list/">Chi nhánh</a>
         <a href="/">Bản đồ</a>
         {% if user.is_authenticated %}
@@ -63,8 +67,9 @@ function confirmBooking() {
             <input type="number" name="guests" placeholder="Số người">
             <input type="date" name="date">
             <input type="time" name="time">
+            <input type="email" name="email" placeholder="Email của bạn">
 
-            <button type="button" class="btn-book" onclick="confirmBooking()">
+            <button type="submit" class="btn-book">
                 GỬI ĐẶT CHỖ
             </button>
 

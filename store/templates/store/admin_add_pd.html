@@ -1,0 +1,26 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'store/add_pd.css' %}">
+
+<form method="POST" enctype="multipart/form-data" class="form-box">
+    <h2>THÊM SẢN PHẨM</h2>
+    {% csrf_token %}
+
+    <label>Chọn quán:</label>
+    {{ form.cafe }}
+
+    <label>Tên sản phẩm:</label>
+    {{ form.name }}
+
+    <label>Mô tả:</label>
+    {{ form.description }}
+
+    <label>Giá:</label>
+    {{ form.price }}
+
+    <label>Ảnh:</label>
+    {{ form.image }}
+
+    <button type="submit">Lưu</button>
+    <a href="{% url 'store:admin_product' %}" class="back-link">⬅ Quay lại</a>
+</form>

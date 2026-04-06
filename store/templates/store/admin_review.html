@@ -1,0 +1,110 @@
+{% load static %}
+{% csrf_token %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>CoffeeGIS - KATINAT - Admin</title>
+    <link rel="stylesheet" href="{% static 'store/ad_style.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'admin/images/logo-katinat.webp' %}">
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="topbar">
+    <a href="/store/admin" class="logo-link">
+        <div class="logo">
+            <img src="{% static 'admin/images/logo-katinat.webp' %}" class="logo-icon">
+            KATINAT Coffee - Admin
+        </div>
+    </a>
+    <nav>
+        <a href="/store/admin">Chi nhánh</a>
+        <a href="{% url 'store:admin_product' %}">Sản phẩm</a>
+        <a href="{% url 'store:admin_booking' %}">Đặt chỗ</a>
+        <a href="/store/admin_review" class="{% if request.path == '/store/admin_review' %}active{% endif %}">
+            Đánh giá
+        </a>
+        {% if user.is_authenticated %}
+            <form method="POST" action="{% url 'store:logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="login-btn">Đăng xuất</button>
+            </form>
+        {% else %}
+            <a href="{% url 'store:login' %}" class="login-btn">Đăng nhập</a>
+        {% endif %}
+    </nav>
+</header>
+
+<h2>Quản lý đánh giá</h2>
+
+<div class="filter-modern">
+    <form method="GET">
+        <label>🔎 Lọc theo quán:</label>
+
+        <select name="cafe" onchange="this.form.submit()">
+            <option value="">Tất cả quán</option>
+
+            {% for c in cafes %}
+                <option value="{{ c.id }}"
+                    {% if selected_cafe == c.id|stringformat:"s" %}selected{% endif %}>
+                    {{ c.name }}
+                </option>
+            {% endfor %}
+        </select>
+        <a href="{% url 'store:admin_review' %}" class="reset-btn">Reset</a>
+    </form>
+</div>
+
+<table border="1" cellpadding="10">
+    <tr>
+        <th>STT</th>
+        <th>Quán</th>
+        <th>Tên</th>
+        <th>Sao</th>
+        <th>Nội dung</th>
+        <th>Action</th>
+    </tr>
+
+    {% for r in reviews %}
+    <tr>
+        <td>{{ forloop.counter }}</td> 
+        <td>{{ r.cafe.name }}</td>
+        <td>{{ r.name }}</td>
+
+        <!-- ⭐ HIỂN THỊ SAO -->
+        <td>
+            {% for i in "12345" %}
+                {% if forloop.counter <= r.rating %}
+                    ⭐
+                {% else %}
+                    ☆
+                {% endif %}
+            {% endfor %}
+        </td>
+
+        <td>{{ r.comment }}</td>
+
+        <td>
+            <form method="POST"
+                  action="{% url 'store:delete_review' r.id %}"
+                  style="display:inline;"
+                  onsubmit="return confirm('Bạn có chắc muốn xoá review này không?');">
+                {% csrf_token %}
+                <button type="submit" class="action-btn delete-btn">
+                    Xoá
+                </button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-bottom">
+        © 2026 CoffeeGIS | LAP TRINH GIS | THANH - THI - THU.
+    </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'store/add_pd.css' %}">
+
+<div class="form-box">
+    <h2>XÁC NHẬN XOÁ</h2>
+
+    <p>Bạn có chắc muốn xoá sản phẩm <b>{{ product.name }}</b> không?</p>
+
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit">Xoá</button>
+    </form>
+
+    <a href="{% url 'store:admin_product' %}" class="back-link">⬅ Huỷ</a>
+</div>

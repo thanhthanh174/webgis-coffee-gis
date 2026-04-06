@@ -9,18 +9,20 @@
     <link rel="icon" type="image/x-icon" href="{% static 'admin/images/logo-katinat.webp' %}">
 </head>
 <body>
-<!-- HEADER -->
 <header class="topbar">
     <a href="/store/" class="logo-link">
         <div class="logo">
             <img src="{% static 'admin/images/logo-katinat.webp' %}" class="logo-icon">
-            KATINAT CoffeeGIS
+            KATINAT Coffee
         </div>
     </a>
 
     <nav class="menu">
         <a href="/store/">Trang chủ</a>
-        <a href="/store/list/">Chi nhánh</a>
+        <a href="{% url 'store:product_list' %}">Sản phẩm</a>
+        <a href="/store/list/" class="{% if request.path == '/store/list/' %}active{% endif %}">
+            Chi nhánh
+        </a>
         <a href="/">Bản đồ</a>
         {% if user.is_authenticated %}
             <form method="POST" action="{% url 'store:logout' %}" style="display:inline;">
@@ -32,6 +34,10 @@
         {% endif %}
     </nav>
 </header>
+
+<div class="cta">
+    <a href="/" class="cta-btn">🔍 Tìm quán gần bạn</a>
+</div>
 
 <h2 class="page-title"></h2>
 
@@ -62,7 +68,6 @@
 {% endfor %}
 </div>
 
-<!-- Phân trang -->
 <div class="pagination">
     {% if page_obj.has_previous %}
         <a href="?page=1" class="page-btn">«</a>
@@ -83,7 +88,6 @@
     {% endif %}
 </div>
 
-<!-- FOOTER -->
 <footer class="footer">
     <div class="footer-bottom">
         © 2026 CoffeeGIS | LAP TRINH GIS | THANH - THI - THU.

@@ -2,7 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Times New Roman', Times, serif;
+    font-family: 'Playfair Display', serif;;
 }
 
 body {
@@ -80,6 +80,20 @@ body {
 .login-btn:hover {
     background: #e6b980;
     transform: translateY(-1px);
+}
+
+.cta {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.cta-btn {
+    background: #c49a6c;
+    padding: 14px 30px;
+    border-radius: 30px;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
 }
 
 /* ===== DANH SÁCH QUÁN ===== */

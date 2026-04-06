@@ -20,4 +20,13 @@ urlpatterns = [
     path('after-login/', views.custom_login_redirect, name='after_login'),
     path('admin/booking/', views.admin_booking, name='admin_booking'),
     path('admin/booking/delete/<int:id>/', views.delete_booking, name='delete_booking'),
+    path('admin/reviews/', views.admin_review, name='admin_review'),
+    path('admin/review/delete/<int:id>/', views.delete_review, name='delete_review'),
+    path('admin/product/delete/<int:id>/', views.delete_product, name='admin_delete_pd'),
+    path('admin/product/add/', views.add_product, name='add_product'),
+    # USER
+    path('san-pham/', views.product_list, name='product_list'),
+    # ADMIN
+    path('admin/products/', views.admin_product, name='admin_product'),
+    path('edit-product/<int:id>/', views.edit_product, name='admin_edit_pd'),
 ]

@@ -1,4 +1,5 @@
 from django.db import models
+from streamlit import form
 
 class Cafe(models.Model):
     name = models.CharField(max_length=200)
@@ -39,3 +40,6 @@ class Booking(models.Model):
     guests = models.IntegerField()
     date = models.DateField()
     time = models.TimeField()
+
+class Branch(models.Model):
+    name = models.CharField(max_length=100)

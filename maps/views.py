@@ -2,9 +2,9 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
-from django.db.models import Avg
+from django.db.models import Avg, Q
 import json
-from .models import Booking, Cafe, Review
+from .models import Booking, Cafe, Review, Product 
 
 # ================= MAP =================
 def simplemap(request):
@@ -16,7 +16,6 @@ def simplemap(request):
             "lat": c.lat,
             "lng": c.lng,
             "address": c.address,
-            # Thêm giờ mở cửa vào đây để bản đồ có thể đọc được
             "opening_hours": c.opening_hours,
             "image": c.image.url if c.image else ""
         }
@@ -36,7 +35,7 @@ def get_cafes(request):
             "address": c.address,
             "lat": c.lat,
             "lng": c.lng,
-            "opening_hours": c.opening_hours, # Cập nhật cho cả API
+            "opening_hours": c.opening_hours,
             "image": c.image.url if c.image else ""
         }
         for c in cafes
@@ -91,7 +90,7 @@ def add_review(request):
 
             return JsonResponse({
                 "status": "success",
-"message": "Đã gửi đánh giá thành công!",
+                "message": "Đã gửi đánh giá thành công!",
                 "avg_rating": round(float(avg_rating), 1),
                 "total_reviews": reviews.count()
             })
@@ -139,13 +138,12 @@ def book_cafe(request):
 
 def get_menu(request):
     data = [
-        {"name": "Trà Oolong", "price": 35000},
-        {"name": "Trà sữa chôm chôm", "price": 39000},
-        {"name": "Cà phê sữa", "price": 29000},
+        {"name": "Trà Oolong", "price": 55000},
+        {"name": "Trà sữa chôm chôm", "price": 60000},
+        {"name": "Cà phê sữa", "price": 55000},
     ]
     return JsonResponse(data, safe=False)
 
 
 def map_view(request):
     return render(request, "maps/map.html")
-

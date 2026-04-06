@@ -7,24 +7,29 @@
     <title>CoffeeGIS - KATINAT</title>
     <link rel="stylesheet" href="{% static 'store/cf_style.css' %}">
     <link rel="icon" type="image/x-icon" href="{% static 'admin/images/logo-katinat.webp' %}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
 <body>
 
-<!-- HEADER -->
 <header class="topbar">
     <a href="/store/" class="logo-link">
         <div class="logo">
             <img src="{% static 'admin/images/logo-katinat.webp' %}" class="logo-icon">
-            KATINAT CoffeeGIS
+            KATINAT Coffee
         </div>
     </a>
 
     <nav class="menu">
-        <a href="/store/">Trang chủ</a>
+        <a href="/store/" class="{% if request.path == '/store/' %}active{% endif %}">
+            Trang chủ
+        </a>
+        <a href="{% url 'store:product_list' %}">Sản phẩm</a>
         <a href="/store/list/">Chi nhánh</a>
         <a href="/">Bản đồ</a>
         {% if user.is_authenticated %}
-            <form method="POST" action="{% url 'store:logout' %}">
+            <form method="POST" action="{% url 'store:logout' %}" style="display:inline;">
                 {% csrf_token %}
                 <button type="submit" class="login-btn">Đăng xuất</button>
             </form>
@@ -34,12 +39,10 @@
     </nav>
 </header>
 
-<!-- GALLERY -->
 <section class="gallery">
     <img src="{% static 'admin/images/katinat-nen.webp' %}" alt="Katinat">
 </section>
 
-<!-- FEATURED PRODUCTS -->
 <section class="featured">
     <p class="subtitle">Gợi ý từ Katinat</p>
     <h2>Sản phẩm <span>nổi bật</span></h2>
@@ -76,15 +79,19 @@
     </div>
 </section>
 
+<section class="map-preview">
+    <h2>Khám phá bản đồ Katinat</h2>
+    <div id="map-home"></div>
 
-<!-- HERO -->
+    <a href="/" class="btn-map">Xem bản đồ đầy đủ</a>
+</section>
+
 <section class="hero">
     <p class="small">TÌM QUÁN KATINAT</p>
     <h1>Chọn <span>không gian</span> phù hợp</h1>
     <a href="/store/list/" class="btn-view">XEM DANH SÁCH CHI NHÁNH</a>
 </section>
 
-<!-- STORY -->
 <section class="story">
     <p class="subtitle">Một chút về</p>
     <h2>KATINAT <span>Story</span></h2>
@@ -95,16 +102,13 @@
     </p>
 </section>
 
-<!-- FOOTER -->
 <footer class="footer">
     <div class="footer-container">
 
-        <!-- LOGO -->
         <div class="footer-logo">
             <img src="{% static 'admin/images/cua-hang-katinat.jpg' %}" alt="Katinat">
         </div>
 
-        <!-- CONTACT -->
         <div class="footer-col">
             <h3>LIÊN HỆ</h3>
             <p>Email: cs@katinat.vn</p>
@@ -113,7 +117,6 @@
             <p>Hotline: (028) 7300 1009</p>
         </div>
 
-        <!-- ABOUT -->
         <div class="footer-col">
             <h3>VỀ CHÚNG TÔI</h3>
             <p>
@@ -127,7 +130,31 @@
         © 2026 CoffeeGIS | LAP TRINH GIS | THANH - THI - THU.
     </div>
 </footer>
+<script id="data-cafe" type="application/json">
+[
+{% for c in cafes %}
+    {
+        "name": "{{ c.name }}",
+        "lat": {{ c.latitude }},
+        "lng": {{ c.longitude }}
+    }{% if not forloop.last %},{% endif %}
+{% endfor %}
+]
+</script>
+<script>
+var map = L.map('map-home').setView([10.8, 106.7], 12);
 
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
 
+var cafes = JSON.parse(document.getElementById('data-cafe').textContent);
+
+cafes.forEach(function(cafe) {
+    L.marker([cafe.lat, cafe.lng])
+        .addTo(map)
+        .bindPopup(cafe.name);
+});
+</script>
 </body>
 </html>

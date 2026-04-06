@@ -14,14 +14,16 @@
     <a href="/store/admin" class="logo-link">
         <div class="logo">
             <img src="{% static 'admin/images/logo-katinat.webp' %}" class="logo-icon">
-            KATINAT CoffeeGIS
+            KATINAT Coffee - Admin
         </div>
     </a>
     <nav>
         <a href="/store/admin">Chi nhánh</a>
-        <a href="">Sản phẩm</a>
-        <a href="{% url 'store:admin_booking' %}">Đặt chỗ</a>
-        <a href="">Đánh giá</a>
+        <a href="{% url 'store:admin_product' %}">Sản phẩm</a>
+        <a href="/store/admin_booking" class="{% if request.path == '/store/admin_booking' %}active{% endif %}">
+            Đặt chỗ
+        </a>
+        <a href="{% url 'store:admin_review' %}">Đánh giá</a>
         {% if user.is_authenticated %}
             <form method="POST" action="{% url 'store:logout' %}">
                 {% csrf_token %}
@@ -34,13 +36,23 @@
 </header>
 <h2>Quản lý đặt chỗ</h2>
 
+<div class="filter-date">
+    <form method="GET">
+        <label>📅 Lọc theo ngày:</label>
+        <input type="date" name="date" value="{{ selected_date }}">
+        <button type="submit">Lọc</button>
+        <a href="{% url 'store:admin_booking' %}" class="reset-btn">Reset</a>
+    </form>
+</div>
+
 <table>
     <tr>
         <th>STT</th>
         <th>Tên</th>
         <th>SĐT</th>
         <th>Chi nhánh</th>
-        <th>Thời gian</th>
+        <th>Ngày</th>
+        <th>Giờ</th>
         <th>Action</th>
     </tr>
 
@@ -49,8 +61,9 @@
         <td>{{ forloop.counter }}</td>
         <td>{{ b.name }}</td>
         <td>{{ b.phone }}</td>
-        <td>{{ b.cafe.name }}</td>
-        <td>{{ b.time }}</td>
+        <td>{{ b.cafe_id.name }}</td>
+        <td>{{ b.date|date:"d/m/Y" }}</td>
+        <td>{{ b.time|time:"H:i" }}</td>
         <td>
             <form method="POST" action="{% url 'store:delete_booking' b.id %}" style="display:inline;"
                 onsubmit="return confirm('Bạn có chắc muốn xoá booking này không?');">

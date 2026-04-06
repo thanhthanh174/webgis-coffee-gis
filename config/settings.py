@@ -146,3 +146,10 @@ MEDIA_ROOT = BASE_DIR / "media"
 # ===== LOGIN SETTINGS =====
 LOGIN_REDIRECT_URL = '/store/after-login/'  
 LOGOUT_REDIRECT_URL = '/store/' 
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
+EMAIL_PORT = 2525
+EMAIL_HOST_USER = 'bc0e8838f96509'
+EMAIL_HOST_PASSWORD = 'ebd4c5ba201e26'
+EMAIL_USE_TLS = True
