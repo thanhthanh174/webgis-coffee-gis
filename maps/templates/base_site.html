@@ -1,6 +1,17 @@
-{% extends "admin/base.html" %}
-{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <title>Web Coffee</title>
 
-{% block extrahead %}
-<link rel="stylesheet" href="{% static 'admin/custom.css' %}">
-{% endblock %}
+    <link rel="stylesheet" href="{% static 'store/style.css' %}">
+    <link rel="stylesheet" href="{% static 'store/responsive.css' %}">
+</head>
+<body>
+
+    {% block content %}
+    {% endblock %}
+
+</body>
+</html>

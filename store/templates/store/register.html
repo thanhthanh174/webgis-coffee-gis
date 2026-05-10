@@ -1,27 +1,69 @@
-{% load static %}
+<!DOCTYPE html>
 <html lang="vi">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
-    <title>CoffeeGIS - KATINAT - Đăng nhập</title>
-    <link rel="stylesheet" href="{% static 'store/login.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoffeeGIS - KATINAT - Đăng ký</title>
+
+    <link rel="stylesheet" href="{% static 'login.css' %}">
+    <link rel="stylesheet" href="{% static 'responsive.css' %}">
     <link rel="icon" type="image/x-icon" href="{% static 'admin/images/logo-katinat.webp' %}">
 </head>
-<form method="POST">
-    <h2>Đăng ký</h2>
-    {% csrf_token %}
+<body>
 
-    <label>Username:</label>
-    <input type="text" name="username">
+<div class="auth-container">
+    <form method="POST" class="auth-form">
+        <h2>Đăng ký</h2>
+        {% csrf_token %}
 
-    <label>Password:</label>
-    <input type="password" name="password">
+        <!-- USERNAME -->
+        <label>Tên đăng nhập:</label>
+        <input type="text" name="username" required>
 
-    <button type="submit">Đăng ký</button>
+        <!-- EMAIL -->
+        <label>Email:</label>
+        <input type="email" name="email" required>
 
-    <p class="form-text">
-        Đã có tài khoản?
-        <a href="{% url 'store:login' %}" class="register-link">Đăng nhập</a>
-    </p>
-</form>
+        <!-- PASSWORD -->
+        <label>Mật khẩu:</label>
+        <div class="password-box">
+            <input type="password" name="password1" id="password1" required>
+            <span onclick="togglePassword('password1', this)">👁</span>
+        </div>
+
+        <!-- CONFIRM PASSWORD -->
+        <label>Nhập lại mật khẩu:</label>
+        <div class="password-box">
+            <input type="password" name="password2" id="password2" required>
+            <span onclick="togglePassword('password2', this)">👁</span>
+        </div>
+
+        <!-- ERROR -->
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <button type="submit">Đăng ký</button>
+
+        <p class="form-text">
+            Đã có tài khoản?
+            <a href="{% url 'store:login' %}" class="register-link">Đăng nhập</a>
+        </p>
+    </form>
+</div>
+
+<script>
+function togglePassword(id, el) {
+    const input = document.getElementById(id);
+    if (input.type === "password") {
+        input.type = "text";
+        el.textContent = "🙈";
+    } else {
+        input.type = "password";
+        el.textContent = "👁";
+    }
+}
+</script>
 </body>
 </html>

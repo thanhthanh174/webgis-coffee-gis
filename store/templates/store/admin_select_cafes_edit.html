@@ -1,0 +1,26 @@
+{% load static %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{% static 'add_pd.css' %}">
+
+<form action="{% url 'store:admin_edit_pd' product.id %}" method="GET" class="form-box" style="max-width: 600px;">
+    <h2>BƯỚC 1: SỬA CHI NHÁNH</h2>
+    <p style="text-align: center; color: #666;">Chọn lại những quán sẽ bán <b>{{ product.name }}</b></p>
+    <hr>
+
+    <div style="margin: 20px 0; text-align: left;">
+        {% for cafe in cafes %}
+            <div style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                <input type="checkbox" name="cafes" value="{{ cafe.id }}" id="cafe{{ cafe.id }}" 
+                       style="width: 20px; height: 20px;"
+                       {% if cafe.id in current_cafe_ids %}checked{% endif %}>
+                <label for="cafe{{ cafe.id }}" style="font-size: 1.1em; cursor: pointer;">
+                    {{ cafe.name }} <br>
+                    <small style="color: #888;">{{ cafe.address }}</small>
+                </label>
+            </div>
+        {% endfor %}
+    </div>
+
+    <button type="submit" style="background-color: #b78a44;">Tiếp theo ➡</button>
+    <a href="{% url 'store:admin_product' %}" class="back-link">⬅ Hủy bỏ</a>
+</form>

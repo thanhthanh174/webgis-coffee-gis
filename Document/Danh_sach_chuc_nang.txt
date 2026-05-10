@@ -1,0 +1,196 @@
+1. Phân hệ người dùng
+1.1. Chức năng xác thực tài khoản
+1.1.1. Đăng ký tài khoản
+Người dùng nhập:
+Username
+Email
+Mật khẩu
+Xác nhận mật khẩu
+Hệ thống kiểm tra:
+Mật khẩu xác nhận có khớp hay không
+Username đã tồn tại hay chưa
+
+1.1.2. Đăng nhập
+Đăng nhập bằng:
+Username
+Password
+Phân quyền sau khi đăng nhập:
+User thường → chuyển đến dashboard người dùng
+Admin → chuyển đến trang quản trị
+Nếu tài khoản vừa reset mật khẩu: Bắt buộc đổi mật khẩu mới
+
+1.1.3. Đăng xuất
+Người dùng đăng xuất khỏi hệ thống.
+Hệ thống chuyển về trang đăng nhập.
+
+1.1.4. Quên mật khẩu
+Người dùng nhập email.
+Hệ thống:
+Kiểm tra email có tồn tại hay không
+Sinh mật khẩu ngẫu nhiên
+Gửi mật khẩu qua email
+Yêu cầu đổi mật khẩu ở lần đăng nhập tiếp theo
+
+1.1.5. Đổi mật khẩu
+Người dùng nhập:
+Mật khẩu cũ
+Mật khẩu mới
+Xác nhận mật khẩu mới
+Hệ thống kiểm tra:
+Mật khẩu cũ chính xác
+Mật khẩu mới xác nhận khớp nhau
+
+1.2. Chức năng bản đồ WebGIS
+Hiển thị bản đồ số tương tác chứa toàn bộ các chi nhánh quán cà phê dưới dạng marker.
+Khi nhấn vào marker, hiển thị:
+Tên quán
+Địa chỉ
+Giờ mở cửa
+Hình ảnh minh họa
+Hỗ trợ xem thư viện ảnh của từng chi nhánh.
+Xác định vị trí hiện tại của người dùng.
+Hỗ trợ chức năng chỉ đường đến quán.
+Cho phép lựa chọn phương tiện di chuyển:
+Đi bộ
+Xe máy
+Xe hơi
+Sau khi chọn phương tiện, hệ thống hiển thị:
+Quãng đường di chuyển
+Thời gian ước tính
+Tuyến đường trực quan trên bản đồ
+Khi thay đổi phương tiện di chuyển:
+Cập nhật thời gian di chuyển
+Cập nhật lộ trình tương ứng
+Hỗ trợ tìm kiếm quán cà phê trên bản đồ.
+Hỗ trợ ghim vị trí trên bản đồ.
+Hỗ trợ lọc các quán cà phê trong bán kính tự chọn.
+
+1.3. Chức năng tra cứu chi nhánh
+Xem danh sách toàn bộ các chi nhánh quán cà phê.
+Hỗ trợ phân trang danh sách chi nhánh.
+Cho phép chọn từng chi nhánh để:
+Xem thông tin chi tiết
+Đặt bàn trực tuyến
+
+1.4. Chức năng xem chi tiết chi nhánh
+Hiển thị thông tin chi tiết của chi nhánh:
+Thông tin quán
+Địa chỉ
+Giờ hoạt động
+Sức chứa
+Hình ảnh chi nhánh
+Các sản phẩm phục vụ tại quán
+Đánh giá từ khách hàng
+
+1.5. Chức năng đặt bàn trực tuyến
+Cho phép người dùng đặt bàn tại chi nhánh mong muốn.
+Thông tin đặt bàn bao gồm:
+Họ tên
+Số điện thoại
+Email
+Số lượng người
+Ngày đặt
+Giờ đặt
+Hệ thống tự động kiểm tra số lượng chỗ trống theo khung giờ.
+Nếu còn đủ sức chứa:
+Xác nhận đặt bàn thành công
+Lưu dữ liệu vào cơ sở dữ liệu
+Gửi email xác nhận cho người dùng
+Nếu vượt quá sức chứa:
+Thông báo lỗi
+Yêu cầu chọn khung giờ khác
+
+1.6. Chức năng đánh giá và nhận xét
+Người dùng sau khi đăng nhập có thể:
+Chấm sao đánh giá
+Viết bình luận nhận xét
+Mỗi tài khoản chỉ được đánh giá một lần trên mỗi chi nhánh.
+Đánh giá được hiển thị công khai cho người dùng khác tham khảo.
+
+1.7. Chức năng xem sản phẩm
+Xem danh sách sản phẩm của hệ thống.
+Mỗi sản phẩm hiển thị:
+Tên sản phẩm
+Giá bán
+Hình ảnh
+Mô tả ngắn và mô tả dài của sản phẩm
+Số sao của sản phẩm
+
+1.8. Responsive giao diện
+Hệ thống hỗ trợ responsive trên nhiều thiết bị:
+Desktop
+Tablet
+Mobile
+Giao diện tự động co giãn phù hợp với kích thước màn hình.
+Tối ưu hiển thị bản đồ và chức năng đặt bàn trên thiết bị di động.
+
+2. Phân hệ quản trị viên (Admin)
+2.1. Quản lý chi nhánh
+Xem danh sách chi nhánh.
+Tìm kiếm chi nhánh theo tên.
+Thêm mới chi nhánh.
+Chỉnh sửa thông tin chi nhánh.
+Xóa chi nhánh.
+Thông tin quản lý gồm:
+Tên quán
+Địa chỉ
+Tọa độ bản đồ
+Giờ mở cửa
+Sức chứa
+Ảnh đại diện
+Bộ sưu tập ảnh
+
+2.2. Quản lý sản phẩm
+Thêm sản phẩm.
+Chỉnh sửa sản phẩm.
+Xóa sản phẩm.
+Upload hình ảnh sản phẩm.
+Gán sản phẩm cho từng chi nhánh.
+Tìm kiếm sản phẩm theo tên
+
+2.3. Quản lý đặt bàn
+Xem danh sách đặt bàn.
+Theo dõi thông tin khách hàng.
+Xóa đặt bàn.
+Tìm kiếm đặt bàn theo ngày.
+Xuất dữ liệu đặt bàn ra file Excel.
+
+2.4. Quản lý đánh giá
+Xem danh sách đánh giá của khách hàng.
+Xóa các đánh giá không phù hợp.
+Tìm kiếm đánh giá theo quán
+
+2.5. Quản lý người dùng
+Xem danh sách tài khoản.
+Thêm tài khoản mới.
+Chỉnh sửa thông tin tài khoản.
+Xóa tài khoản.
+Phân quyền giữa user và admin.
+Tìm kiếm người dung theo username.
+
+2.6. Quản lý sự kiện
+Tạo sự kiện mới.
+Chỉnh sửa nội dung sự kiện.
+Xóa sự kiện.
+Upload hình ảnh sự kiện.
+Kích hoạt hoặc vô hiệu hóa sự kiện.
+
+2.7. Quản lý tâm thư
+Thêm tâm thư của thương hiệu
+Chỉnh sửa nội dung giới thiệu thương hiệu.
+Chỉnh sửa câu chuyện phát triển.
+Chỉnh sửa nội dung hiển thị trên trang chủ.
+Xóa tâm thư
+
+3. API hệ thống
+3.1. API xác thực tài khoản
+API đăng ký tài khoản
+API đăng nhập
+API quên mật khẩu
+API đổi mật khẩu
+
+3.2. API hệ thống
+API đặt bàn
+API gửi đánh giá
+API lấy danh sách đánh giá
+API lấy menu chi nhánh

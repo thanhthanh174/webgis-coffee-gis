@@ -4,13 +4,22 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CoffeeGIS - KATINAT - Admin</title>
-    <link rel="stylesheet" href="{% static 'store/ad_style.css' %}">
+    <link rel="stylesheet" href="{% static 'ad_style.css' %}">
+    <link rel="stylesheet" href="{% static 'responsive.css' %}">
     <link rel="icon" type="image/x-icon" href="{% static 'admin/images/logo-katinat.webp' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .topbar nav { display: flex; align-items: center; gap: 15px; }
+        .topbar nav a { padding: 8px 12px; border-radius: 5px; transition: 0.3s; text-decoration: none; color: white; }
+        .topbar nav a:hover { background-color: rgba(197, 162, 125, 0.2); color: #c5a27d; }
+        .nav-highlight { color: #c5a27d !important; border: 1px solid rgba(197, 162, 125, 0.5); }
+        .nav-highlight:hover { background-color: #c5a27d !important; color: #1a2428 !important; }
+    </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header class="topbar">
     <a href="/store/admin" class="logo-link">
         <div class="logo">
@@ -19,17 +28,29 @@
         </div>
     </a>
     <nav>
-        <a href="/store/admin">Chi nhánh</a>
-        <a href="/store/admin_product" class="{% if request.path == '/store/admin_product' %}active{% endif %}">
-            Sản phẩm
-        </a>
+        <a href="{% url 'store:admin_dashboard' %}">Chi nhánh</a>
+        <a href="{% url 'store:admin_product' %}" class="active">Sản phẩm</a>
+        <a href="{% url 'store:admin_event_list' %}">Sự kiện</a>
         <a href="{% url 'store:admin_booking' %}">Đặt chỗ</a>
         <a href="{% url 'store:admin_review' %}">Đánh giá</a>
+        <a href="{% url 'store:admin_user' %}">Người dùng</a>
+        
+        <span style="color: rgba(255,255,255,0.3);">|</span>
+        <a href="{% url 'store:admin_edit_story' %}" class="nav-highlight" title="Quản lý bài viết trang Sản Phẩm"><i class="fas fa-scroll"></i> Tuyên Ngôn</a>
+        <a href="{% url 'store:admin_edit_home_story' %}" class="nav-highlight" title="Quản lý bài viết Trang Chủ"><i class="fas fa-heart"></i> Tâm Thư</a>
+        <span style="color: rgba(255,255,255,0.3);">|</span>
+
         {% if user.is_authenticated %}
-            <form method="POST" action="{% url 'store:logout' %}">
-                {% csrf_token %}
-                <button type="submit" class="login-btn">Đăng xuất</button>
-            </form>
+        <div class="user-menu">
+            👤 {{ user.username }}
+            <div class="dropdown">
+                <a href="{% url 'store:change_password' %}">Đổi mật khẩu</a>
+                <form method="POST" action="{% url 'store:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit">Đăng xuất</button>
+                </form>
+            </div>
+        </div>
         {% else %}
             <a href="{% url 'store:login' %}" class="login-btn">Đăng nhập</a>
         {% endif %}
@@ -38,13 +59,14 @@
 
 <h2>Quản lý sản phẩm</h2>
 
-<a href="{% url 'store:add_product' %}" class="add-btn">
-    + Thêm sản phẩm
-</a>
-
+<div style="text-align: center; margin-bottom: 30px;">
+    <a href="{% url 'store:select_cafes_for_product' %}" style="display: inline-block; background-color: #b78a44; color: white; padding: 10px 25px; border-radius: 20px; text-decoration: none; font-weight: bold;">
+        + Thêm sản phẩm mới
+    </a>
+</div>
 <div class="search-container">
     <form method="GET" class="search-form">
-        <input type="text" name="q" placeholder="🔍 Nhập tên sản phẩm..." value="{{ q }}">
+        <input type="text" name="q" placeholder="🔍 Nhập tên sản phẩm..." value="{{ request.GET.q|default:'' }}">
         <button type="submit">Tìm</button>
         <a href="{% url 'store:admin_product' %}" class="reset-btn">Reset</a>
     </form>
@@ -60,26 +82,49 @@
         <th>Action</th>
     </tr>
 
-    {% for p in products %}
+    {% for p in page_obj %}
     <tr>
-        <td>{{ forloop.counter }}</td>
+        <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
         <td>{{ p.name }}</td>
         <td>{{ p.price }} đ</td>
         <td>
-            {% if p.image %}
-                <img src="{{ p.image.url }}">
-            {% endif %}
+            <div class="img-wrapper">
+                {% if p.image %}
+                    <img src="{{ p.image.url }}" class="main-img">
+                {% endif %}
+
+                {% if p.images.all|length > 0 %}
+                    <span class="img-badge">+{{ p.images.all|length }}</span>
+                {% endif %}
+            </div>
         </td>
         <td>
-            <a href="{% url 'store:admin_edit_pd' p.id %}" class="action-btn edit-btn">Sửa</a>
+            <a href="{% url 'store:select_cafes_for_edit' p.id %}" class="action-btn edit-btn">Sửa</a>
             <a href="{% url 'store:admin_delete_pd' p.id %}" class="action-btn delete-btn">Xoá</a>
         </td>
     </tr>
     {% endfor %}
 </table>
-</div>
+<div class="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page=1&q={{ request.GET.q|default:'' }}">«</a>
+        <a href="?page={{ page_obj.previous_page_number }}&q={{ request.GET.q|default:'' }}">‹</a>
+    {% endif %}
 
-<!-- FOOTER -->
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+            <span class="active">{{ num }}</span>
+        {% else %}
+            <a href="?page={{ num }}&q={{ request.GET.q|default:'' }}">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}&q={{ request.GET.q|default:'' }}">›</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}&q={{ request.GET.q|default:'' }}">»</a>
+    {% endif %}
+</div>
+</div>
 <footer class="footer">
     <div class="footer-bottom">
         © 2026 CoffeeGIS | LAP TRINH GIS | THANH - THI - THU.

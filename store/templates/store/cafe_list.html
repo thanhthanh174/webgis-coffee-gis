@@ -1,12 +1,15 @@
-{% load static %}
-{% csrf_token %}
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+    {% load static %}
+    {% csrf_token %}
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CoffeeGIS - KATINAT - Chi nhánh</title>
-    <link rel="stylesheet" href="{% static 'store/list.css' %}">
+    <link rel="stylesheet" href="{% static 'list.css' %}">
+    <link rel="stylesheet" href="{% static 'responsive.css' %}">
     <link rel="icon" type="image/x-icon" href="{% static 'admin/images/logo-katinat.webp' %}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 <header class="topbar">
@@ -16,19 +19,23 @@
             KATINAT Coffee
         </div>
     </a>
-
     <nav class="menu">
-        <a href="/store/">Trang chủ</a>
+        <a href="/store/" class="{% if request.path == '/store/' %}active{% endif %}">Trang chủ</a>
         <a href="{% url 'store:product_list' %}">Sản phẩm</a>
-        <a href="/store/list/" class="{% if request.path == '/store/list/' %}active{% endif %}">
-            Chi nhánh
-        </a>
+        <a href="/store/list/">Chi nhánh</a>
         <a href="/">Bản đồ</a>
         {% if user.is_authenticated %}
-            <form method="POST" action="{% url 'store:logout' %}" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit" class="login-btn">Đăng xuất</button>
-            </form>
+        <div class="user-menu">
+            👤 {{ user.username }}
+            <div class="dropdown">
+                <a href="{% url 'store:change_password' %}">Đổi mật khẩu</a>
+
+                <form method="POST" action="{% url 'store:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit">Đăng xuất</button>
+                </form>
+            </div>
+        </div>
         {% else %}
             <a href="{% url 'store:login' %}" class="login-btn">Đăng nhập</a>
         {% endif %}
@@ -43,7 +50,7 @@
 
 <div class="cafe-list">
 {% for c in page_obj %}
-    <div class="cafe-card">
+    <div class="cafe-card {% if c.id|stringformat:'s' == error_cafe %}error-card{% endif %}">
 
         <div class="img-wrapper">
             {% if c.image %}
@@ -56,6 +63,10 @@
         <div class="cafe-info">
             <h3>{{ c.name }}</h3>
             <p>{{ c.address }}</p>
+
+            {% if c.id|stringformat:'s' == error_cafe %}
+                <p class="error-text">❌ Quán đã hết chỗ</p>
+            {% endif %}
 
             {% if user.is_authenticated %}
                 <a href="{% url 'store:book_form' c.id %}" class="btn-book">Đặt chỗ</a>
@@ -89,9 +100,33 @@
 </div>
 
 <footer class="footer">
-    <div class="footer-bottom">
-        © 2026 CoffeeGIS | LAP TRINH GIS | THANH - THI - THU.
+    <div class="footer-container">
+        <div class="footer-logo">
+            <img src="{% static 'admin/images/cua-hang-katinat.jpg' %}" alt="Katinat">
+        </div>
+        <div class="footer-col">
+            <h3>LIÊN HỆ</h3>
+            <p>Email: cs@katinat.vn</p>
+            <p>Trụ sở chính: 100 Lê Thánh Tôn, Phường Sài Gòn, TP.HCM</p>
+            <p>Hotline: (028) 7300 1009</p>
+        </div>
+        <div class="footer-col">
+            <h3>VỀ CHÚNG TÔI</h3>
+            <p>Katinat Coffee & Tea House là chuỗi cà phê lấy cảm hứng từ văn hoá Sài Gòn xưa, kết hợp phong cách hiện đại và tinh tế.</p>
+        </div>
     </div>
+    <div class="footer-bottom">© 2026 CoffeeGIS | LAP TRINH GIS | THANH - THI - THU.</div>
 </footer>
+{% if messages %}
+<script>
+    {% for message in messages %}
+        Swal.fire({
+            text: "{{ message }}",
+            icon: "{% if 'success' in message.tags %}success{% elif 'error' in message.tags %}error{% else %}info{% endif %}",
+            confirmButtonText: "OK"
+        });
+    {% endfor %}
+</script>
+{% endif %}
 </body>
 </html>

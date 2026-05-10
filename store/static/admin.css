@@ -1,0 +1,34 @@
+.dashboard{
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.card{
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    width: 200px;
+    text-align: center;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
+
+.card h3{
+    margin-bottom: 10px;
+}
+
+.card p{
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.badge{
+    display: inline-block;
+    margin-top: 10px;
+    background: red;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+}

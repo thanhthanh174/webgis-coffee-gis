@@ -1,0 +1,107 @@
+/* ===== PALETTE =====
+   Dark coffee: #3b2416
+   Coffee:      #5c3a21
+   Latte:       #8b5a2b
+   Caramel:     #c9a66b
+   Cream:       #f6efe6
+*/
+
+/* Background */
+body, .content-wrapper {
+    background-color: #f6efe6 !important;
+}
+
+/* Sidebar */
+.sidebar {
+    background: linear-gradient(180deg, #3b2416, #5c3a21) !important;
+}
+
+/* Header */
+.main-header {
+    background: linear-gradient(90deg, #5c3a21, #8b5a2b) !important;
+}
+
+/* Brand */
+.brand-link {
+    background-color: #3b2416 !important;
+    color: #f6efe6 !important;
+}
+
+/* Menu text */
+.nav-sidebar .nav-link {
+    color: #f6efe6 !important;
+}
+
+.nav-sidebar .nav-link.active {
+    background: linear-gradient(90deg, #c9a66b, #8b5a2b) !important;
+    color: #3b2416 !important;
+    border-radius: 10px;
+}
+
+/* Cards */
+.card {
+    border-radius: 16px !important;
+    border: none;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.card-header {
+    background: linear-gradient(90deg, #8b5a2b, #c9a66b) !important;
+    color: #3b2416 !important;
+    font-weight: bold;
+    border-radius: 16px 16px 0 0;
+}
+
+/* ===== Add / Change buttons ===== */
+.object-tools a {
+    border-radius: 999px !important;
+    padding: 10px 18px !important;
+    font-weight: 600;
+    color: #3b2416 !important;
+    background: linear-gradient(135deg, #f6efe6, #c9a66b) !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: all 0.25s ease;
+}
+
+.object-tools a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.35);
+    filter: brightness(1.05);
+}
+
+/* Buttons */
+.btn-success, .btn-primary {
+    background: linear-gradient(135deg, #8b5a2b, #c9a66b) !important;
+    border: none !important;
+    color: #3b2416 !important;
+}
+
+/* Recent actions badge */
+.timeline-item .bg-green {
+    background-color: #c9a66b !important;
+    color: #3b2416 !important;
+}
+
+.card .card-header * {
+    color: #ffffff !important;
+}
+
+/* Top header text -> trắng */
+.main-header,
+.main-header a,
+.main-header .nav-link,
+.main-header .brand-text,
+.main-header .navbar-nav .nav-link {
+    color: #ffffff !important;
+}
+
+/* Icon trên header -> trắng */
+.main-header i,
+.main-header svg {
+    color: #ffffff !important;
+}
+
+/* Hover vẫn trắng (không chuyển xanh/đen) */
+.main-header a:hover {
+    color: #f5e6c8 !important; /* trắng ngà */
+}

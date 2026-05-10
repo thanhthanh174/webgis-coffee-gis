@@ -1,0 +1,35 @@
+{% load static %}
+{% if error %}
+    <p style="color:red; text-align:center;">{{ error }}</p>
+{% endif %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{% static 'add_pd.css' %}">
+<link rel="stylesheet" href="{% static 'responsive.css' %}">
+<form method="POST" class="form-box">
+    <h2>TẠO NGƯỜI DÙNG MỚI</h2>
+    {% csrf_token %}
+
+    <label>Username:</label>
+    <input type="text" name="username" required>
+
+    <label>Email:</label>
+    <input type="email" name="email" required>
+
+    <label>Mật khẩu:</label>
+    <input type="password" name="password" required>
+
+    <label>Nhập lại mật khẩu:</label>
+    <input type="password" name="confirm_password" required>
+
+    <label>Quyền:</label>
+    <select name="role">
+        <option value="user">User</option>
+        <option value="admin">Admin</option>
+    </select>
+
+    <button type="submit">Tạo tài khoản</button>
+
+    <a href="{% url 'store:admin_user' %}" class="back-link">
+        ← Quay lại
+    </a>
+</form>

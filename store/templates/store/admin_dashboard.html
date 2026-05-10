@@ -1,16 +1,46 @@
-{% load static %}
-{% csrf_token %}
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+    {% load static %}
+    {% csrf_token %}
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CoffeeGIS - KATINAT - Admin</title>
-    <link rel="stylesheet" href="{% static 'store/ad_style.css' %}">
+    <link rel="stylesheet" href="{% static 'ad_style.css' %}">
+    <link rel="stylesheet" href="{% static 'responsive.css' %}">
     <link rel="icon" type="image/x-icon" href="{% static 'admin/images/logo-katinat.webp' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* PHÉP THUẬT LÀM ĐẸP THANH ĐIỀU HƯỚNG */
+        .topbar nav {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .topbar nav a {
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: 0.3s;
+            text-decoration: none;
+            color: white; /* Đổi màu chữ nếu css cũ của mày làm mờ */
+        }
+        .topbar nav a:hover {
+            background-color: rgba(197, 162, 125, 0.2); /* Sáng lên màu vàng đồng */
+            color: #c5a27d;
+        }
+        /* Nút Tuyên ngôn / Tâm thư nổi bật */
+        .nav-highlight {
+            color: #c5a27d !important;
+            border: 1px solid rgba(197, 162, 125, 0.5);
+        }
+        .nav-highlight:hover {
+            background-color: #c5a27d !important;
+            color: #1a2428 !important;
+        }
+    </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header class="topbar">
     <a href="/store/admin" class="logo-link">
         <div class="logo">
@@ -19,17 +49,39 @@
         </div>
     </a>
     <nav>
-        <a href="/store/admin" class="{% if request.path == '/store/admin' %}active{% endif %}">
-            Chi nhánh
-        </a>
+        <a href="{% url 'store:admin_dashboard' %}">Chi nhánh</a>
         <a href="{% url 'store:admin_product' %}">Sản phẩm</a>
+        <a href="{% url 'store:admin_event_list' %}">Sự kiện</a>
         <a href="{% url 'store:admin_booking' %}">Đặt chỗ</a>
-        <a href="{% url 'store:admin_review' %}">Đánh giá</a>
+        <a href="{% url 'store:admin_review' %}" class="{% if 'review' in request.path %}active{% endif %}">
+            Đánh giá
+        </a>
+        <a href="{% url 'store:admin_user' %}">Người dùng</a>
+        
+        <!-- 2 NÚT THẦN THÁNH NẰM TÁCH BIỆT RÕ RÀNG Ở ĐÂY -->
+        <span style="color: rgba(255,255,255,0.3);">|</span> 
+        
+        <a href="{% url 'store:admin_edit_story' %}" class="nav-highlight" title="Quản lý bài viết trang Sản Phẩm">
+            <i class="fas fa-scroll"></i> Tuyên Ngôn
+        </a>
+        <a href="{% url 'store:admin_edit_home_story' %}" class="nav-highlight" title="Quản lý bài viết Trang Chủ">
+            <i class="fas fa-heart"></i> Tâm Thư
+        </a>
+
+        <span style="color: rgba(255,255,255,0.3);">|</span>
+
         {% if user.is_authenticated %}
-            <form method="POST" action="{% url 'store:logout' %}">
-                {% csrf_token %}
-                <button type="submit" class="login-btn">Đăng xuất</button>
-            </form>
+        <div class="user-menu">
+            👤 {{ user.username }}
+            <div class="dropdown">
+                <a href="{% url 'store:change_password' %}">Đổi mật khẩu</a>
+
+                <form method="POST" action="{% url 'store:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit">Đăng xuất</button>
+                </form>
+            </div>
+        </div>
         {% else %}
             <a href="{% url 'store:login' %}" class="login-btn">Đăng nhập</a>
         {% endif %}
@@ -38,15 +90,21 @@
 
 <h2>Quản lý chi nhánh</h2>
 
+<!-- Đã dọn dẹp cái nút Tâm thư bị rớt ra ngoài lúc nãy -->
 <a href="{% url 'store:add_cafe' %}" class="add-btn">+ Thêm quán</a>
 
 <div class="search-container">
     <form method="GET" class="search-form">
-        <input type="text" name="q" placeholder="🔍 Nhập tên quán..." value="{{ q }}">
+        <input type="text" name="q" placeholder="🔍 Nhập tên quán..." value="{{ request.GET.q|default:'' }}">
         <button type="submit">Tìm</button>
         <a href="{% url 'store:admin_dashboard' %}" class="reset-btn">Reset</a>
     </form>
 </div>
+
+<a href="{% url 'maps:export_excel' %}?branch={{ request.GET.q }}" 
+   class="add-btn">
+   📥 Xuất Excel Chi nhánh
+</a>
 
 <div class="table-container">
 <table>
@@ -54,20 +112,33 @@
         <th>STT</th>
         <th>Tên</th>
         <th>Địa chỉ</th>
+        <th>Giờ mở cửa</th>  
         <th>Ảnh</th>
         <th>Action</th>
     </tr>
 
-    {% for c in cafes %}
+    {% for c in page_obj %}
     <tr>
-        <td>{{ forloop.counter }}</td> 
+        <td>{{ forloop.counter0|add:page_obj.start_index }}</td> 
         <td>{{ c.name }}</td>
         <td>{{ c.address }}</td>
+
         <td>
-            {% if c.image %}
-                <img src="{{ c.image.url }}">
-            {% endif %}
+            {{ c.opening_hours|default:"-" }}
         </td>
+
+        <td>
+            <div class="img-wrapper">
+                {% if c.image %}
+                    <img src="{{ c.image.url }}">
+                {% endif %}
+
+                {% if c.images.count > 0 %}
+                    <span class="img-badge">+{{ c.images.count }}</span>
+                {% endif %}
+            </div>
+        </td>
+
         <td>
             <a href="{% url 'store:edit_cafe' c.id %}" class="action-btn edit-btn">Sửa</a>
             <a href="{% url 'store:delete_cafe' c.id %}" class="action-btn delete-btn">Xoá</a>
@@ -75,9 +146,27 @@
     </tr>
     {% endfor %}
 </table>
+<div class="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page=1&q={{ request.GET.q|default:'' }}">«</a>
+        <a href="?page={{ page_obj.previous_page_number }}&q={{ request.GET.q|default:'' }}">‹</a>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+            <span class="active">{{ num }}</span>
+        {% else %}
+            <a href="?page={{ num }}&q={{ request.GET.q|default:'' }}">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}&q={{ request.GET.q|default:'' }}">›</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}&q={{ request.GET.q|default:'' }}">»</a>
+    {% endif %}
+</div>
 </div>
 
-<!-- FOOTER -->
 <footer class="footer">
     <div class="footer-bottom">
         © 2026 CoffeeGIS | LAP TRINH GIS | THANH - THI - THU.

@@ -4,31 +4,39 @@
     <meta charset="UTF-8">
     <title>KATINAT CoffeeGIS</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'store/responsive.css' %}">
 </head>
 <body>
 
-<!-- NAVBAR -->
-<div class="navbar">
+<header class="topbar">
     <a href="/store/" class="logo-link">
         <div class="logo">
             <img src="{% static 'admin/images/logo-katinat.webp' %}" class="logo-icon">
-            KATINAT CoffeeGIS
+            KATINAT Coffee
         </div>
     </a>
-    <div class="menu">
-        <a href="/">Trang chủ</a>
+    <nav class="menu">
+        <a href="/store/" class="{% if request.path == '/store/' %}active{% endif %}">Trang chủ</a>
+        <a href="{% url 'store:product_list' %}">Sản phẩm</a>
         <a href="/store/list/">Chi nhánh</a>
         <a href="/">Bản đồ</a>
         {% if user.is_authenticated %}
-            <form method="POST" action="{% url 'store:logout' %}">
-                {% csrf_token %}
-                <button type="submit" class="login-btn">Đăng xuất</button>
-            </form>
+        <div class="user-menu">
+            👤 {{ user.username }}
+            <div class="dropdown">
+                <a href="{% url 'store:change_password' %}">Đổi mật khẩu</a>
+
+                <form method="POST" action="{% url 'store:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit">Đăng xuất</button>
+                </form>
+            </div>
+        </div>
         {% else %}
             <a href="{% url 'store:login' %}" class="login-btn">Đăng nhập</a>
         {% endif %}
-    </div>
-</div>
+    </nav>
+</header>
 
 <!-- NỘI DUNG -->
 {% block content %}

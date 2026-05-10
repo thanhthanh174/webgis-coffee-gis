@@ -1,15 +1,86 @@
 {% load static %}
-{% csrf_token %}
+{% csrf_token %}    
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CoffeeGIS - KATINAT</title>
-    <link rel="stylesheet" href="{% static 'store/cf_style.css' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
     <link rel="icon" type="image/x-icon" href="{% static 'admin/images/logo-katinat.webp' %}">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <link rel="stylesheet" href="{% static 'responsive.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        /* 1. CÁC THÀNH PHẦN NÚT */
+        .btn-vintage {
+            background: #c5a27d; color: white; border: none; padding: 12px 30px;
+            font-size: 1em; border-radius: 30px; cursor: pointer; transition: 0.3s;
+            margin-top: 20px; font-family: 'Playfair Display', serif; display: inline-block; text-decoration: none;
+        }
+        .btn-vintage:hover { background: #f2f0ef; transform: scale(1.05); color: #4a342e; }
+
+        /* 2. MODAL TÂM TƯ */
+        .modal-overlay {
+            display: none; 
+            position: fixed; z-index: 10000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.7); backdrop-filter: blur(5px);
+        }
+        .modal-custom-content {
+            background-color: #fdfaf7; margin: 5% auto; padding: 40px;
+            border: 1px solid #c5a27d; width: 65%; max-height: 85vh;
+            overflow-y: auto; border-radius: 20px; position: relative;
+        }
+        
+        .article-text p:first-of-type::first-letter {
+            font-family: 'Playfair Display', serif; font-size: 3.5em;
+            float: left; margin-right: 15px; line-height: 0.8; color: #5d4037;
+        }
+
+        .img-event-step {
+            display: block; width: 100%; max-width: 95%; margin: 30px auto;
+            border-radius: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .close-modal {
+            position: absolute; right: 20px; top: 10px;
+            font-size: 35px; cursor: pointer; color: #c5a27d;
+        }
+
+        /* 3. PHÉP THUẬT THỤC DÔ (RESPONSIVE) */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px; 
+            padding: 20px 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            background: #fff; border-radius: 20px; padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: 0.3s;
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+
+        /* 4. CHÂN TRANG (FOOTER) */
+        .footer {
+            background-color: #1a2428; color: white; padding: 60px 0 20px 0;
+            margin-top: 50px;
+        }
+        .footer h3 {
+            color: #c5a27d; font-family: 'Playfair Display', serif;
+            margin-bottom: 25px; font-size: 1.5em;
+        }
+
+        @media (max-width: 768px) {
+            .product-grid { padding: 20px 20px; grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
 
@@ -20,19 +91,22 @@
             KATINAT Coffee
         </div>
     </a>
-
     <nav class="menu">
-        <a href="/store/" class="{% if request.path == '/store/' %}active{% endif %}">
-            Trang chủ
-        </a>
+        <a href="/store/" class="{% if request.path == '/store/' %}active{% endif %}">Trang chủ</a>
         <a href="{% url 'store:product_list' %}">Sản phẩm</a>
         <a href="/store/list/">Chi nhánh</a>
         <a href="/">Bản đồ</a>
         {% if user.is_authenticated %}
-            <form method="POST" action="{% url 'store:logout' %}" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit" class="login-btn">Đăng xuất</button>
-            </form>
+        <div class="user-menu">
+            👤 {{ user.username }}
+            <div class="dropdown">
+                <a href="{% url 'store:change_password' %}">Đổi mật khẩu</a>
+                <form method="POST" action="{% url 'store:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit">Đăng xuất</button>
+                </form>
+            </div>
+        </div>
         {% else %}
             <a href="{% url 'store:login' %}" class="login-btn">Đăng nhập</a>
         {% endif %}
@@ -43,47 +117,80 @@
     <img src="{% static 'admin/images/katinat-nen.webp' %}" alt="Katinat">
 </section>
 
-<section class="featured">
-    <p class="subtitle">Gợi ý từ Katinat</p>
-    <h2>Sản phẩm <span>nổi bật</span></h2>
-
+<section class="featured" style="background-color: #fdfaf5; padding: 80px 0;">
+    <p class="subtitle">Hoạt động cộng đồng</p>
+    <h2>Sự kiện <span>nổi bật</span></h2>
     <div class="product-grid">
-
+        {% for event in events %}
         <div class="product-card">
-            <img src="{% static 'admin/images/olong-ba-la.jpg' %}" alt="">
-            <h3>Trà Olong Ba Lá</h3>
-            <p>Đậm đà - Sang trọng</p>
-            <a href="{% url 'store:product_detail' 1 %}" class="btn-detail">
-                Xem chi tiết
-            </a>
+            <div class="aspect-ratio-container">
+                {% if event.image %}
+                    <img src="{{ event.image.url }}" class="event-card-img" alt="{{ event.title }}" style="width: 100%; height: auto; max-height: 250px; object-fit: contain;">
+                {% else %}
+                    <img src="{% static 'admin/images/katinat-nen.webp' %}" class="event-card-img" alt="Default" style="width: 100%; height: auto; max-height: 250px; object-fit: contain;">
+                {% endif %}
+            </div>
+            <h3 style="margin-top: 15px;">{{ event.title }}</h3>
+            <p>{{ event.short_description|default:"" }}</p>
+            <p style="font-size: 0.9em; color: #8a7066;">📅 Diễn ra: {{ event.date|date:"d/m/Y" }}</p>
+            <button class="btn-detail" data-bs-toggle="modal" data-bs-target="#eventModal{{ event.id }}">Khám phá sự kiện</button>
         </div>
-
-        <div class="product-card">
-            <img src="{% static 'admin/images/ts-chom-chom.jpg' %}" width="300">
-            <h3>Trà sữa Chôm Chôm</h3>
-            <p>Ngọt ngào - Thanh mát</p>
-            <a href="{% url 'store:product_detail' 2 %}" class="btn-detail">
-                Xem chi tiết
-            </a>
-        </div>
-
-        <div class="product-card">
-            <img src="{% static 'admin/images/ts-hong-dran.jpg' %}" alt="">
-            <h3>Trà sữa Hồng D'ran</h3>
-            <p>Cổ điển - Nồng nàn</p>
-            <a href="{% url 'store:product_detail' 3 %}" class="btn-detail">
-                Xem chi tiết
-            </a>
-        </div>
-
+        {% endfor %}
     </div>
 </section>
+
+{% for event in events %}
+<div class="modal fade" id="eventModal{{ event.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content p-5" style="background-color: #fdfaf7; border-radius: 25px; border: 1px solid #c5a27d;">
+            <div class="modal-header border-0">
+                <h2 class="modal-title w-100 text-center" style="font-family: 'Playfair Display', serif; color: #5d4037; font-size: 2.3em;">{{ event.title }}</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body article-text">
+                <div class="interleaved-content">
+                    <div class="raw-content d-none">{{ event.content|linebreaksbr }}</div>
+                    <div class="raw-images d-none">
+                        {% for img in event.images.all %}
+                            <img src="{{ img.image.url }}">
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
 
 <section class="map-preview">
     <h2>Khám phá bản đồ Katinat</h2>
     <div id="map-home"></div>
-
     <a href="/" class="btn-map">Xem bản đồ đầy đủ</a>
+</section>
+
+<section class="featured">
+    <p class="subtitle">Gợi ý từ Katinat</p>
+    <h2>Sản phẩm <span>nổi bật</span></h2>
+    <div class="product-grid">
+        <div class="product-card">
+            <img src="{% static 'admin/images/olong-ba-la.jpg' %}" alt="Olong">
+            <h3>Trà Olong Ba Lá</h3>
+            <p>Đậm đà - Sang trọng</p>
+            <a href="{% url 'store:product_detail' 1 %}" class="btn-detail">Khám phá mỹ vị</a>
+        </div>
+        <div class="product-card">
+            <img src="{% static 'admin/images/ts-chom-chom.jpg' %}" width="300" alt="Chom Chom">
+            <h3>Trà sữa Chôm Chôm</h3>
+            <p>Ngọt ngào - Thanh mát</p>
+            <a href="{% url 'store:product_detail' 2 %}" class="btn-detail">Khám phá mỹ vị</a>
+        </div>
+        <div class="product-card">
+            <img src="{% static 'admin/images/ts-hong-dran.jpg' %}" alt="Hong Dran">
+            <h3>Trà sữa Hồng D'ran</h3>
+            <p>Cổ điển - Nồng nàn</p>
+            <a href="{% url 'store:product_detail' 3 %}" class="btn-detail">Khám phá mỹ vị</a>
+        </div>
+    </div>
 </section>
 
 <section class="hero">
@@ -94,67 +201,112 @@
 
 <section class="story">
     <p class="subtitle">Một chút về</p>
-    <h2>KATINAT <span>Story</span></h2>
+    <h2>{% if story %}{{ story.main_title }}{% else %}KATINAT <span>Story</span>{% endif %}</h2>
     <p class="desc">
-        Tại Katinat, chúng tôi không chỉ bán cà phê, mà còn nâng niu những giá trị văn hóa vượt thời gian. Lấy cảm hứng từ con đường Catinat hào hoa một thuở, chúng tôi tái hiện một Sài Gòn xưa tinh tế giữa nhịp sống đương đại. Mỗi không gian đều được chúng tôi chăm chút để trở thành điểm chạm của cảm xúc, nơi quá khứ và hiện tại cùng giao thoa.
-        
-        Chúng tôi tin rằng giá trị thực sự nằm ở sự tận tâm, từ hương vị đậm đà trong từng tách ly đến những khoảng lặng bình yên giữa lòng phố thị. Katinat chính là tâm huyết của chúng tôi trong việc gìn giữ di sản và kết nối những tâm hồn đồng điệu. Với chúng tôi, mỗi khách hàng ghé thăm là một hành trình viết tiếp những kỷ niệm đẹp đầy kiêu hãnh.
+        {% if story %}
+            {{ story.text_1|truncatewords:60|linebreaksbr }}
+        {% else %}
+            Tại Katinat, chúng tôi không chỉ bán cà phê, mà còn nâng niu những giá trị văn hóa vượt thời gian...
+        {% endif %}
     </p>
+    <button id="btnTamTu" class="btn-vintage">📜 Khám phá Tâm tư Katinat</button>
 </section>
 
-<footer class="footer">
-    <div class="footer-container">
+<div id="modalTamTu" class="modal-overlay">
+    <div class="modal-custom-content">
+        <span class="close-modal">&times;</span>
+        <h2 class="modal-header" style="text-align: center; font-family: 'Playfair Display', serif; color: #5d4037; margin-bottom: 30px;">
+            {% if story %}{{ story.main_title }}{% else %}Tâm Tư Katinat - Hành Trình Di Sản{% endif %}
+        </h2>
+        <div class="modal-body article-text">
+            {% if story %}
+                {% if story.image_1 %}<img src="{{ story.image_1.url }}" class="img-event-step">{% endif %}
+                <p>{{ story.text_1|linebreaksbr }}</p>
 
-        <div class="footer-logo">
-            <img src="{% static 'admin/images/cua-hang-katinat.jpg' %}" alt="Katinat">
+                {% if story.title_2 %}<h3>{{ story.title_2 }}</h3>{% endif %}
+                {% if story.image_2 %}<img src="{{ story.image_2.url }}" class="img-event-step">{% endif %}
+                <p>{{ story.text_2|linebreaksbr }}</p>
+
+                {% if story.title_3 %}<h3>{{ story.title_3 }}</h3>{% endif %}
+                {% if story.image_3 %}<img src="{{ story.image_3.url }}" class="img-event-step">{% endif %}
+                <p>{{ story.text_3|linebreaksbr }}</p>
+
+                {% if story.title_4 %}<h3>{{ story.title_4 }}</h3>{% endif %}
+                {% if story.image_4 %}<img src="{{ story.image_4.url }}" class="img-event-step">{% endif %}
+                <p>{{ story.text_4|linebreaksbr }}</p>
+            {% else %}
+                <h3>🏙️ Khởi nguồn từ một giấc mơ di sản</h3>
+                <img src="{% static 'admin/images/trangchukatinat.jpg' %}" class="img-event-step">
+                <p>Katinat khởi đầu với một giấc mơ lớn: không chỉ phục vụ một ly cà phê đơn thuần...</p>
+            {% endif %}
         </div>
+    </div>
+</div>
 
+<footer class="footer">
+    <div class="product-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); text-align: left; align-items: start; gap: 40px;">
+        <div class="footer-logo">
+            <img src="{% static 'admin/images/cua-hang-katinat.jpg' %}" alt="Katinat Store" style="width:100%; border-radius:15px;">
+        </div>
         <div class="footer-col">
             <h3>LIÊN HỆ</h3>
             <p>Email: cs@katinat.vn</p>
-            <p>Trụ sở chính: 96-98-100 Trần Nguyên Đán, Phường 3, Bình Thạnh, TP.HCM</p>
-            <p>CN Hà Nội: Số 11, Ngõ 84, Phố Ngọc Khánh, Giảng Võ, Ba Đình, Hà Nội</p>
+            <p>Trụ sở chính: 100 Lê Thánh Tôn, Quận 1, TP.HCM</p>
             <p>Hotline: (028) 7300 1009</p>
         </div>
-
         <div class="footer-col">
             <h3>VỀ CHÚNG TÔI</h3>
-            <p>
-                Katinat Coffee & Tea House là chuỗi cà phê lấy cảm hứng từ
-                văn hoá Sài Gòn xưa, kết hợp phong cách hiện đại và tinh tế.
-            </p>
+            <p>Katinat Coffee & Tea House là chuỗi cà phê lấy cảm hứng từ văn hoá Sài Gòn xưa...</p>
         </div>
     </div>
-
-    <div class="footer-bottom">
-        © 2026 CoffeeGIS | LAP TRINH GIS | THANH - THI - THU.
-    </div>
+    <div class="footer-bottom">© 2026 CoffeeGIS | LAP TRINH GIS</div>
 </footer>
+
 <script id="data-cafe" type="application/json">
 [
-{% for c in cafes %}
-    {
-        "name": "{{ c.name }}",
-        "lat": {{ c.latitude }},
-        "lng": {{ c.longitude }}
-    }{% if not forloop.last %},{% endif %}
+{% for c in cafes_data %}
+    { "name": "{{ c.name }}", "lat": {{ c.lat }}, "lng": {{ c.lng }} }{% if not forloop.last %},{% endif %}
 {% endfor %}
 ]
 </script>
+
 <script>
-var map = L.map('map-home').setView([10.8, 106.7], 12);
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
-}).addTo(map);
-
-var cafes = JSON.parse(document.getElementById('data-cafe').textContent);
-
-cafes.forEach(function(cafe) {
-    L.marker([cafe.lat, cafe.lng])
-        .addTo(map)
-        .bindPopup(cafe.name);
+// JS XỬ LÝ ẢNH XEN KẼ
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll('.interleaved-content').forEach(container => {
+        const rawContent = container.querySelector('.raw-content').innerHTML;
+        const images = container.querySelectorAll('.raw-images img');
+        const paragraphs = rawContent.split(/<br\s*\/?>\s*<br\s*\/?>/);
+        container.innerHTML = '';
+        paragraphs.forEach((pText, index) => {
+            if (pText.trim() !== "") {
+                const p = document.createElement('p');
+                p.style.marginBottom = "25px";
+                p.innerHTML = pText;
+                container.appendChild(p);
+                if (images[index]) {
+                    const img = document.createElement('img');
+                    img.src = images[index].src;
+                    img.className = "img-event-step";
+                    container.appendChild(img);
+                }
+            }
+        });
+    });
 });
+
+// JS MODAL TÂM TƯ
+var modal = document.getElementById("modalTamTu");
+var btn = document.getElementById("btnTamTu");
+var span = document.getElementsByClassName("close-modal")[0];
+if(btn) btn.onclick = function() { modal.style.display = "block"; document.body.style.overflow = "hidden"; }
+if(span) span.onclick = function() { modal.style.display = "none"; document.body.style.overflow = "auto"; }
+window.onclick = function(event) { if (event.target == modal) { modal.style.display = "none"; document.body.style.overflow = "auto"; } }
+
+// JS BẢN ĐỒ LEAFLET (GIỮ NGUYÊN)
+var mapHome = L.map('map-home', { scrollWheelZoom: false }).setView([10.77, 106.68], 13);
+L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png').addTo(mapHome);
 </script>
+
 </body>
 </html>

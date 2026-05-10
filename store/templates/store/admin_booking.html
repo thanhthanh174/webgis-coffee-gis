@@ -3,13 +3,22 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CoffeeGIS - KATINAT - Admin</title>
-    <link rel="stylesheet" href="{% static 'store/ad_style.css' %}">
+    <link rel="stylesheet" href="{% static 'ad_style.css' %}">
+    <link rel="stylesheet" href="{% static 'responsive.css' %}">
     <link rel="icon" type="image/x-icon" href="{% static 'admin/images/logo-katinat.webp' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .topbar nav { display: flex; align-items: center; gap: 15px; }
+        .topbar nav a { padding: 8px 12px; border-radius: 5px; transition: 0.3s; text-decoration: none; color: white; }
+        .topbar nav a:hover { background-color: rgba(197, 162, 125, 0.2); color: #c5a27d; }
+        .nav-highlight { color: #c5a27d !important; border: 1px solid rgba(197, 162, 125, 0.5); }
+        .nav-highlight:hover { background-color: #c5a27d !important; color: #1a2428 !important; }
+    </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <header class="topbar">
     <a href="/store/admin" class="logo-link">
         <div class="logo">
@@ -18,17 +27,29 @@
         </div>
     </a>
     <nav>
-        <a href="/store/admin">Chi nhánh</a>
+        <a href="{% url 'store:admin_dashboard' %}">Chi nhánh</a>
         <a href="{% url 'store:admin_product' %}">Sản phẩm</a>
-        <a href="/store/admin_booking" class="{% if request.path == '/store/admin_booking' %}active{% endif %}">
-            Đặt chỗ
-        </a>
+        <a href="{% url 'store:admin_event_list' %}">Sự kiện</a>
+        <a href="{% url 'store:admin_booking' %}" class="active">Đặt chỗ</a>
         <a href="{% url 'store:admin_review' %}">Đánh giá</a>
+        <a href="{% url 'store:admin_user' %}">Người dùng</a>
+        
+        <span style="color: rgba(255,255,255,0.3);">|</span>
+        <a href="{% url 'store:admin_edit_story' %}" class="nav-highlight" title="Quản lý bài viết trang Sản Phẩm"><i class="fas fa-scroll"></i> Tuyên Ngôn</a>
+        <a href="{% url 'store:admin_edit_home_story' %}" class="nav-highlight" title="Quản lý bài viết Trang Chủ"><i class="fas fa-heart"></i> Tâm Thư</a>
+        <span style="color: rgba(255,255,255,0.3);">|</span>
+
         {% if user.is_authenticated %}
-            <form method="POST" action="{% url 'store:logout' %}">
-                {% csrf_token %}
-                <button type="submit" class="login-btn">Đăng xuất</button>
-            </form>
+        <div class="user-menu">
+            👤 {{ user.username }}
+            <div class="dropdown">
+                <a href="{% url 'store:change_password' %}">Đổi mật khẩu</a>
+                <form method="POST" action="{% url 'store:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit">Đăng xuất</button>
+                </form>
+            </div>
+        </div>
         {% else %}
             <a href="{% url 'store:login' %}" class="login-btn">Đăng nhập</a>
         {% endif %}
@@ -45,6 +66,12 @@
     </form>
 </div>
 
+<a href="{% url 'maps:export_booking_excel' %}?date={{ request.GET.date }}" class="add-btn">📥 Xuất Excel Đặt chỗ</a>
+<a href="{% url 'store:export_excel_report' %}" style="display: inline-block; background-color: #217346; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; margin-bottom: 20px;">
+    📊 Xuất Báo Cáo Excel (Thống kê)
+</a>
+
+<div class="table-container">
 <table>
     <tr>
         <th>STT</th>
@@ -56,17 +83,16 @@
         <th>Action</th>
     </tr>
 
-    {% for b in bookings %}
+    {% for b in page_obj %}
     <tr>
-        <td>{{ forloop.counter }}</td>
+        <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
         <td>{{ b.name }}</td>
         <td>{{ b.phone }}</td>
         <td>{{ b.cafe_id.name }}</td>
         <td>{{ b.date|date:"d/m/Y" }}</td>
         <td>{{ b.time|time:"H:i" }}</td>
         <td>
-            <form method="POST" action="{% url 'store:delete_booking' b.id %}" style="display:inline;"
-                onsubmit="return confirm('Bạn có chắc muốn xoá booking này không?');">
+            <form method="POST" action="{% url 'store:delete_booking' b.id %}" style="display:inline;" onsubmit="return confirm('Bạn có chắc muốn xoá booking này không?');">
                 {% csrf_token %}
                 <button type="submit" class="action-btn delete-btn">Xoá</button>
             </form>
@@ -75,7 +101,26 @@
     {% endfor %}
 </table>
 
-<!-- FOOTER -->
+<div class="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page=1&date={{ request.GET.date|default:'' }}">«</a>
+        <a href="?page={{ page_obj.previous_page_number }}&date={{ request.GET.date|default:'' }}">‹</a>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+            <span class="active">{{ num }}</span>
+        {% else %}
+            <a href="?page={{ num }}&date={{ request.GET.date|default:'' }}">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}&date={{ request.GET.date|default:'' }}">›</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}&date={{ request.GET.date|default:'' }}">»</a>
+    {% endif %}
+</div>
+</div>
 <footer class="footer">
     <div class="footer-bottom">
         © 2026 CoffeeGIS | LAP TRINH GIS | THANH - THI - THU.

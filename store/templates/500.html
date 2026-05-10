@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>KATINAT - Lỗi hệ thống</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(135deg, #3e2723, #6d4c41);
+            color: #f5ebe0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .box {
+            background: rgba(255, 248, 240, 0.08);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            font-size: 90px;
+            margin: 0;
+            color: #d7ccc8;
+        }
+
+        h2 {
+            margin: 10px 0;
+            color: #efebe9;
+        }
+
+        p {
+            opacity: 0.85;
+        }
+
+        .coffee {
+            font-size: 50px;
+            margin-bottom: 10px;
+            animation: shake 2s infinite;
+        }
+
+        @keyframes shake {
+            0% { transform: rotate(0); }
+            25% { transform: rotate(5deg); }
+            50% { transform: rotate(-5deg); }
+            75% { transform: rotate(3deg); }
+            100% { transform: rotate(0); }
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 25px;
+            background: #a1887f;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+
+        a:hover {
+            background: #8d6e63;
+        }
+
+        .brand {
+            margin-top: 20px;
+            font-size: 14px;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <div class="coffee">☕</div>
+    <h1>500</h1>
+    <h2>Oops! Hệ thống gặp lỗi</h2>
+    <p>Đã có sự cố xảy ra phía máy chủ. Vui lòng thử lại sau.</p>
+
+    <a href="/">⬅ Quay về trang chủ</a>
+</body>
+</html>

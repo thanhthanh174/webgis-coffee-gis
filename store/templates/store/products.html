@@ -1,79 +1,164 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Sản phẩm - Katinat Coffee & Tea House</title>
+    <title>CoffeeGIS - KATINAT - Sản phẩm</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'responsive.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'store/pd.css' %}">
+    <link rel="stylesheet" href="{% static 'pd.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'admin/images/logo-katinat.webp' %}">
+    <style>
+        .katinat-manifesto { line-height: 2; color: #444; font-family: 'Montserrat', sans-serif; padding: 60px 0; }
+        .katinat-manifesto h2 { font-family: 'Playfair Display', serif; color: #b8860b; border-bottom: 3px solid #b8860b; padding-bottom: 15px; margin-bottom: 40px; }
+        .katinat-manifesto h3 { font-family: 'Playfair Display', serif; color: #5d4037; font-size: 1.8rem; margin-bottom: 20px; }
+        .highlight-item { background: #fdfaf5; border-left: 6px solid #b8860b; padding: 40px; margin-bottom: 40px; border-radius: 0 20px 20px 0; box-shadow: 4px 4px 15px rgba(0,0,0,0.08); }
+        .label-text { color: #b8860b; font-weight: 800; text-transform: uppercase; font-size: 0.95em; display: block; margin-top: 20px; margin-bottom: 5px; }
+        .img-story {
+            width: 50%;
+            display: block;
+            margin: 0 auto 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+            transition: transform 0.3s;
+        }
+        .img-story:hover { transform: scale(1.02); }
+        .user-menu {
+            position: relative;
+            display: inline-block;
+            color: white;
+            cursor: pointer;
+        }
+
+        .dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            background: white;
+            min-width: 160px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .dropdown a,
+        .dropdown button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background: #cfa36a;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .dropdown a:hover,
+        .dropdown button:hover {
+            background: #f5f5f5;
+        }
+
+        .user-menu:hover .dropdown {
+            display: block;
+        }
+    </style>
 </head>
 <body>
-
     <header class="topbar">
-        <a href="/store/" class="logo-link">
-            <div class="logo">
-                <img src="{% static 'admin/images/logo-katinat.webp' %}" class="logo-icon">
-                KATINAT Coffee
-            </div>
-        </a>
+    <a href="/store/" class="logo-link">
+        <div class="logo">
+            <img src="{% static 'admin/images/logo-katinat.webp' %}" class="logo-icon">
+            KATINAT Coffee
+        </div>
+    </a>
+    <nav class="menu">
+        <a href="/store/" class="{% if request.path == '/store/' %}active{% endif %}">Trang chủ</a>
+        <a href="{% url 'store:product_list' %}">Sản phẩm</a>
+        <a href="/store/list/">Chi nhánh</a>
+        <a href="/">Bản đồ</a>
+        {% if user.is_authenticated %}
+        <div class="user-menu">
+            👤 {{ user.username }}
+            <div class="dropdown">
+                <a href="{% url 'store:change_password' %}">Đổi mật khẩu</a>
 
-        <nav class="menu">
-            <a href="/store/">Trang chủ</a>
-            <a href="/store/product_list" class="{% if request.path == '/store/product_list' %}active{% endif %}">
-                Sản phẩm
-            </a>
-            <a href="/store/list/">Chi nhánh</a>
-            <a href="/">Bản đồ</a>
-            {% if user.is_authenticated %}
-                <form method="POST" action="{% url 'store:logout' %}" style="display:inline;">
+                <form method="POST" action="{% url 'store:logout' %}">
                     {% csrf_token %}
-                    <button type="submit" class="login-btn">Đăng xuất</button>
+                    <button type="submit">Đăng xuất</button>
                 </form>
-            {% else %}
-                <a href="{% url 'store:login' %}" class="login-btn">Đăng nhập</a>
-            {% endif %}
-        </nav>
-    </header>
+            </div>
+        </div>
+        {% else %}
+            <a href="{% url 'store:login' %}" class="login-btn">Đăng nhập</a>
+        {% endif %}
+    </nav>
+</header>
 
     <div class="container">
-        <div class="page-header">
-            <h1>Menu của KATINAT</h1>
-            <div class="gold-divider"></div>
-        </div>
-
+        <div class="page-header"><h1>Menu của KATINAT</h1><div class="gold-divider"></div></div>
         <div class="row g-5">
-            {% for p in products %}
+            {% for p in page_obj %}
             <div class="col-md-4">
                 <div class="card product-card text-center">
-                    <div class="img-container">
+                    <div id="carousel{{ p.id }}" class="carousel slide">
+                    <div class="carousel-inner">
+
                         {% if p.image %}
-                            <img src="{{ p.image.url }}" class="product-img" alt="{{ p.name }}">
+                        <div class="carousel-item active">
+                            <img src="{{ p.image.url }}" class="d-block w-100 product-img">
+                        </div>
                         {% endif %}
+
+                        {% for img in p.images.all %}
+                        <div class="carousel-item {% if not p.image and forloop.first %}active{% endif %}">
+                            <img src="{{ img.image.url }}" class="d-block w-100 product-img">
+                        </div>
+                        {% endfor %}
+
+                    </div>
+
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carousel{{ p.id }}" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                    </button>
+
+                    <button class="carousel-control-next" type="button" data-bs-target="#carousel{{ p.id }}" data-bs-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                    </button>
                     </div>
                     <div class="card-body">
                         <h5 class="product-name">{{ p.name }}</h5>
                         <p class="product-price">{{ p.price }} VNĐ</p>
-                        <button class="btn btn-luxury" data-bs-toggle="modal" data-bs-target="#descModal{{ p.id }}">
-                            Khám phá mỹ vị
-                        </button>
+                        <button class="btn btn-luxury" data-bs-toggle="modal" data-bs-target="#descModal{{ p.id }}">Khám phá mỹ vị</button>
                     </div>
                 </div>
-
+                
                 <div class="modal fade" id="descModal{{ p.id }}" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content text-center">
+                        <div class="modal-content">
                             <div class="p-3 d-flex justify-content-end">
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
-                            <div class="modal-header border-0 d-block">
-                                <h5 class="modal-title">{{ p.name }}</h5>
-                                <div class="gold-divider" style="width: 50px;"></div>
+                            <div class="modal-header border-0 d-block text-center">
+                                <h5 class="modal-title" style="font-family: 'Playfair Display', serif; color: #3b2416; font-size: 1.8em;">{{ p.name }}</h5>
+                                <div class="gold-divider" style="width: 50px; margin: 10px auto;"></div>
                             </div>
-                            <div class="modal-body">
-                                {{ p.description|linebreaksbr|default:'Một tuyệt tác hương vị đang chờ bạn khám phá.' }}
+                            
+                            <div class="modal-body" style="text-align: left; padding: 20px;">
+                                {% if p.short_desc %}
+                                    <p class="text-center" style="font-style: italic; color: #8b5a2b; font-family: 'Playfair Display', serif;">{{ p.short_desc }}</p>
+                                {% endif %}
+
+                                <div style="line-height: 1.8; color: #5d4037; font-family: 'Montserrat', sans-serif;">
+                                    {% if p.origin %}<p><strong>Nguồn gốc:</strong><br>{{ p.origin|linebreaksbr }}</p>{% endif %}
+                                    {% if p.brewing_method %}<p><strong>Tâm pháp pha chế:</strong><br>{{ p.brewing_method|linebreaksbr }}</p>{% endif %}
+                                    {% if p.anecdote %}<p><strong>Giai thoại:</strong><br>{{ p.anecdote|linebreaksbr }}</p>{% endif %}
+                                    {% if p.philosophy %}<p><strong>Cảm thức nhân sinh:</strong><br>{{ p.philosophy|linebreaksbr }}</p>{% endif %}
+                                    
+                                    {% if not p.origin and not p.brewing_method and not p.anecdote and not p.philosophy %}
+                                        <p class="text-center" style="font-style: italic;">Một tuyệt tác hương vị đang chờ bạn khám phá.</p>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -81,14 +166,85 @@
             </div>
             {% endfor %}
         </div>
+
+        <div class="pagination text-center mt-4">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">« Đầu</a>
+                <a href="?page={{ page_obj.previous_page_number }}">‹ Trước</a>
+            {% endif %}
+
+            <span>
+                Trang {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">Sau ›</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">Cuối »</a>
+            {% endif %}
+        </div>
+
+        {% if story %}
+        <div class="katinat-manifesto text-center">
+            <h2>{{ story.main_title }}</h2>
+            
+            {% if story.image_1 %}
+                <img src="{{ story.image_1.url }}" class="img-story">
+            {% endif %}
+            {% if story.text_1 %}
+                <p style="text-align: justify; margin-bottom: 40px;">{{ story.text_1|linebreaksbr }}</p>
+            {% endif %}
+
+            {% if story.title_2 %}
+                <h3>{{ story.title_2 }}</h3>
+            {% endif %}
+            {% if story.image_2 %}
+                <img src="{{ story.image_2.url }}" class="img-story">
+            {% endif %}
+            {% if story.text_2 %}
+                <p style="text-align: justify; margin-bottom: 40px;">{{ story.text_2|linebreaksbr }}</p>
+            {% endif %}
+            
+            {% if story.title_3 %}
+                <h3>{{ story.title_3 }}</h3>
+            {% endif %}
+            {% if story.image_3 %}
+                <img src="{{ story.image_3.url }}" class="img-story">
+            {% endif %}
+            {% if story.text_3 %}
+                <p style="text-align: justify; margin-bottom: 40px;">{{ story.text_3|linebreaksbr }}</p>
+            {% endif %}
+
+            {% if story.title_4 %}
+                <h3>{{ story.title_4 }}</h3>
+            {% endif %}
+            {% if story.image_4 %}
+                <img src="{{ story.image_4.url }}" class="img-story">
+            {% endif %}
+            {% if story.text_4 %}
+                <p style="text-align: justify; margin-bottom: 40px;">{{ story.text_4|linebreaksbr }}</p>
+            {% endif %}
+        </div>
+        {% endif %}
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
     <footer class="footer">
-    <div class="footer-bottom">
-        © 2026 CoffeeGIS | LAP TRINH GIS | THANH - THI - THU.
+    <div class="footer-container">
+        <div class="footer-logo">
+            <img src="{% static 'admin/images/cua-hang-katinat.jpg' %}" alt="Katinat">
+        </div>
+        <div class="footer-col">
+            <h3>LIÊN HỆ</h3>
+            <p>Email: cs@katinat.vn</p>
+            <p>Trụ sở chính: 100 Lê Thánh Tôn, Phường Sài Gòn, TP.HCM</p>
+            <p>Hotline: (028) 7300 1009</p>
+        </div>
+        <div class="footer-col">
+            <h3>VỀ CHÚNG TÔI</h3>
+            <p>Katinat Coffee & Tea House là chuỗi cà phê lấy cảm hứng từ văn hoá Sài Gòn xưa, kết hợp phong cách hiện đại và tinh tế.</p>
+        </div>
     </div>
+    <div class="footer-bottom">© 2026 CoffeeGIS | LAP TRINH GIS | THANH - THI - THU.</div>
 </footer>
 </body>
 </html>

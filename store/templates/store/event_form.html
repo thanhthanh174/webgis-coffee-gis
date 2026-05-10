@@ -1,0 +1,74 @@
+{% load static %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{% static 'add_pd.css' %}">
+<link rel="stylesheet" href="{% static 'responsive.css' %}">
+<form method="POST" enctype="multipart/form-data" class="form-box">
+    <h2>THÊM SỰ KIỆN</h2>
+    {% csrf_token %}
+
+    <label>Tên sự kiện:</label>
+    {{ form.title }}
+
+    <label>Mô tả ngắn:</label>
+    {{ form.short_description }}
+
+    <label>Nội dung chi tiết:</label>
+    {{ form.content }}
+
+    <label>Ngày diễn ra:</label>
+    {{ form.date }}
+
+    <label>Hiển thị trên trang chủ:</label>
+    {{ form.is_active }}
+
+    <label>Ảnh chính:</label>
+    {{ form.image }}
+
+    {% if event.image %}
+        <img src="{{ event.image.url }}" width="150" style="margin-top:10px;">
+    {% endif %}
+
+    <label>Ảnh phụ:</label>
+    <input type="file" id="imageInput" name="images" multiple>
+    <div id="preview-container"></div>
+
+    <div style="margin-top:10px;">
+        {% for img in event.images.all %}
+            <div style="display:inline-block; position:relative; margin:5px;">
+                <img src="{{ img.image.url }}" width="100">
+                
+                <input type="checkbox" name="delete_images" value="{{ img.id }}">
+                Xoá
+            </div>
+        {% endfor %}
+    </div>
+
+    <button type="submit">Cập nhật</button>
+    <a href="{% url 'store:admin_event_list' %}" class="back-link">⬅ Quay lại</a>
+</form>
+
+<script>
+document.getElementById('imageInput').addEventListener('change', function(event) {
+    const preview = document.getElementById('preview-container');
+    preview.innerHTML = "";
+
+    const files = event.target.files;
+
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+
+        if (file.type.startsWith("image/")) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const img = document.createElement("img");
+                img.src = e.target.result;
+                img.classList.add("preview-img");
+                preview.appendChild(img);
+            };
+
+            reader.readAsDataURL(file);
+        }
+    }
+});
+</script>

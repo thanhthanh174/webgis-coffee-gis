@@ -1,82 +1,123 @@
 {% load static %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{% static 'add_cf.css' %}">
 
-<link rel="stylesheet" href="{% static 'store/add_cf.css' %}">
-
-<!-- Leaflet -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
-<!-- Search -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
 <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-
-<form method="POST" enctype="multipart/form-data" class="form-box">
-    <h2>THÊM QUÁN</h2>
+<link rel="stylesheet" href="{% static 'responsive.css' %}">
+<form method="POST" enctype="multipart/form-data" class="form-box" id="cafeForm">
+    <h2>{% if form.instance.pk %}CẬP NHẬT QUÁN{% else %}THÊM QUÁN MỚI{% endif %}</h2>
     {% csrf_token %}
 
-    <!-- ROW 1 -->
+    <!-- TÊN + ĐỊA CHỈ + GIỜ MỞ CỬA -->
     <div class="row">
         <div class="col">
             <label>Tên quán:</label>
             {{ form.name }}
         </div>
-
         <div class="col">
             <label>Địa chỉ:</label>
             {{ form.address }}
         </div>
+        <div class="col">
+            <label>Giờ mở cửa:</label>
+            {{ form.opening_hours }}
+        </div>
     </div>
 
-    <!-- ROW 2 -->
+    <!-- ẢNH -->
     <div class="row">
+        <!-- ẢNH ĐẠI DIỆN -->
         <div class="col">
-            <label>Ảnh:</label>
-            {{ form.image }}
+            <label>Ảnh đại diện (Thumbnail):</label>
+
+            <!-- input có id -->
+            <input type="file" name="image" id="thumbInput">
+
+            <!-- preview ảnh mới -->
+            <img id="thumbPreview"
+                 style="display:none; width:150px; margin-top:10px; border-radius:10px;">
+
+            <!-- ảnh cũ -->
+            {% if form.instance.image %}
+                <img src="{{ form.instance.image.url }}"
+                     style="width:150px; margin-top:10px; border-radius:10px;">
+            {% endif %}
+        </div>
+
+        <!-- ALBUM -->
+        <div class="col" style="background:#fff4f4; padding:10px; border-radius:5px;">
+            <label style="color:red; font-weight:bold;">
+                Thêm Album (Nhiều ảnh):
+            </label>
+
+            <input type="file" name="more_images" id="multiImageInput" multiple accept="image/*">
+
+            <!-- preview nhiều ảnh -->
+            <div id="previewContainer"></div>
+
+            <!-- hiển thị ảnh đã có -->
+            {% if form.instance.pk and form.instance.images.all %}
+                <div style="margin-top:10px;">
+                    <label>Ảnh đã thêm:</label>
+                    <div style="display:flex; flex-wrap:wrap;">
+                        {% for img in form.instance.images.all %}
+                            <img src="{{ img.image.url }}" 
+                                style="width:120px; height:120px; object-fit:cover; margin:5px; border-radius:10px;">
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
         </div>
     </div>
 
     <!-- MAP -->
     <label>Chọn vị trí trên bản đồ:</label>
-    <div id="map" style="height: 400px; margin-bottom: 15px;"></div>
+    <div id="map" style="height:400px; margin-bottom:15px;"></div>
 
     <!-- LAT LNG -->
     <div class="row">
         <div class="col">
             <label>Latitude:</label>
-            <input type="text" id="lat" name="lat" readonly>
+            <input type="text" id="lat" name="lat" value="{{ form.instance.lat }}" readonly>
         </div>
-
         <div class="col">
             <label>Longitude:</label>
-            <input type="text" id="lng" name="lng" readonly>
+            <input type="text" id="lng" name="lng" value="{{ form.instance.lng }}" readonly>
         </div>
     </div>
 
-    <button type="submit">Lưu</button>
+    <button type="submit">Lưu thông tin</button>
     <a href="{% url 'store:admin_dashboard' %}" class="back-link">⬅ Quay lại</a>
 </form>
+
+<!-- JS -->
 <script>
-var map = L.map('map').setView([10.7769, 106.7009], 13);
+// ===== MAP =====
+var startLat = "{{ form.instance.lat|default:10.7769 }}";
+var startLng = "{{ form.instance.lng|default:106.7009 }}";
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap'
+var map = L.map('map').setView([startLat, startLng], 15);
+
+L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
-// search địa điểm
-L.Control.geocoder({
-    defaultMarkGeocode: true
-}).addTo(map);
+L.Control.geocoder({ defaultMarkGeocode: true }).addTo(map);
 
 var marker;
+
+if ("{{ form.instance.lat }}") {
+    marker = L.marker([startLat, startLng]).addTo(map);
+}
 
 map.on('click', function(e){
     var lat = e.latlng.lat;
     var lng = e.latlng.lng;
 
-    if(marker){
-        map.removeLayer(marker);
-    }
-
+    if(marker) map.removeLayer(marker);
     marker = L.marker([lat, lng]).addTo(map);
 
     document.getElementById('lat').value = lat.toFixed(6);
@@ -86,5 +127,38 @@ map.on('click', function(e){
 window.addEventListener("load", function(){
     map.invalidateSize();
 });
-</script>
 
+
+// ===== PREVIEW ẢNH ĐẠI DIỆN =====
+document.getElementById("thumbInput").addEventListener("change", function(e){
+    const file = e.target.files[0];
+    if(file){
+        const img = document.getElementById("thumbPreview");
+        img.src = URL.createObjectURL(file);
+        img.style.display = "block";
+    }
+});
+
+
+// ===== PREVIEW NHIỀU ẢNH =====
+document.getElementById("multiImageInput").addEventListener("change", function(e){
+    const container = document.getElementById("previewContainer");
+    container.innerHTML = "";
+
+    for(let file of e.target.files){
+        if(file.type.startsWith("image/")){
+            const img = document.createElement("img");
+            img.src = URL.createObjectURL(file);
+
+            img.style.width = "120px";
+            img.style.height = "120px";
+            img.style.objectFit = "cover";
+            img.style.margin = "5px";
+            img.style.borderRadius = "10px";
+            img.style.boxShadow = "0 4px 10px rgba(0,0,0,0.2)";
+
+            container.appendChild(img);
+        }
+    }
+});
+</script>

@@ -1,10 +1,12 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CoffeeGIS - KATINAT - Chi nhánh</title>
-    <link rel="stylesheet" href="{% static 'store/list.css' %}">
+    <link rel="stylesheet" href="{% static 'list.css' %}">
+    <link rel="stylesheet" href="{% static 'responsive.css' %}">
     <link rel="icon" type="image/x-icon" href="{% static 'admin/images/logo-katinat.webp' %}">
 </head>
 <script>
@@ -29,7 +31,6 @@ function confirmBooking() {
 
 <body>
 <!-- HEADER -->
-<!-- HEADER -->
 <header class="topbar">
     <a href="/store/" class="logo-link">
         <div class="logo">
@@ -37,17 +38,23 @@ function confirmBooking() {
             KATINAT Coffee
         </div>
     </a>
-
     <nav class="menu">
-        <a href="/store/">Trang chủ</a>
+        <a href="/store/" class="{% if request.path == '/store/' %}active{% endif %}">Trang chủ</a>
         <a href="{% url 'store:product_list' %}">Sản phẩm</a>
         <a href="/store/list/">Chi nhánh</a>
         <a href="/">Bản đồ</a>
         {% if user.is_authenticated %}
-            <form method="POST" action="{% url 'store:logout' %}">
-                {% csrf_token %}
-                <button type="submit" class="login-btn">Đăng xuất</button>
-            </form>
+        <div class="user-menu">
+            👤 {{ user.username }}
+            <div class="dropdown">
+                <a href="{% url 'store:change_password' %}">Đổi mật khẩu</a>
+
+                <form method="POST" action="{% url 'store:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit">Đăng xuất</button>
+                </form>
+            </div>
+        </div>
         {% else %}
             <a href="{% url 'store:login' %}" class="login-btn">Đăng nhập</a>
         {% endif %}
@@ -68,7 +75,7 @@ function confirmBooking() {
             <input type="date" name="date">
             <input type="time" name="time">
             <input type="email" name="email" placeholder="Email của bạn">
-
+            <p class="capacity-text">👥 Sức chứa: <b>50</b> người</p>
             <button type="submit" class="btn-book">
                 GỬI ĐẶT CHỖ
             </button>

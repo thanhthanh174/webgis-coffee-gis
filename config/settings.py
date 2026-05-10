@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -39,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'maps',
-    "store",
+    'store',
 ]
 
 MIDDLEWARE = [
@@ -114,11 +115,6 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
-STATIC_URL = 'static/'
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
@@ -140,9 +136,6 @@ JAZZMIN_SETTINGS = {
 }
 STATICFILES_DIRS = [ BASE_DIR / "static" ]
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
-
 # ===== LOGIN SETTINGS =====
 LOGIN_REDIRECT_URL = '/store/after-login/'  
 LOGOUT_REDIRECT_URL = '/store/' 
@@ -153,3 +146,11 @@ EMAIL_PORT = 2525
 EMAIL_HOST_USER = 'bc0e8838f96509'
 EMAIL_HOST_PASSWORD = 'ebd4c5ba201e26'
 EMAIL_USE_TLS = True
+
+ALLOWED_HOSTS = ['*']
+
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+MEDIA_URL = '/media/gallery/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

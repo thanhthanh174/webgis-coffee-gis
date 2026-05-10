@@ -1,0 +1,17 @@
+{% load static %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{% static 'add_pd.css' %}">
+<link rel="stylesheet" href="{% static 'responsive.css' %}">
+<form method="POST" class="form-box">
+    <h2>SỬA NGƯỜI DÙNG</h2>
+    {% csrf_token %}
+
+    <label>Username:</label>
+    <input type="text" name="username" value="{{ user_obj.username }}">
+
+    <label>Email:</label>
+    <input type="email" name="email" value="{{ user_obj.email }}">
+
+    <button type="submit">Cập nhật</button>
+    <a href="{% url 'store:admin_user' %}" class="back-link">⬅ Quay lại</a>
+</form>

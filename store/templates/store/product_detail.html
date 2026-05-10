@@ -1,15 +1,21 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CoffeeGIS - KATINAT</title>
-    <link rel="stylesheet" href="{% static 'store/pd_detail.css' %}">
+
+    <link rel="stylesheet" href="{% static 'pd_detail.css' %}">
+    <link rel="stylesheet" href="{% static 'responsive.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
     <link rel="icon" type="image/x-icon" href="{% static 'admin/images/logo-katinat.webp' %}">
 </head>
 <body>
 
-<!-- HEADER -->
 <header class="topbar">
     <a href="/store/" class="logo-link">
         <div class="logo">
@@ -17,40 +23,85 @@
             KATINAT Coffee
         </div>
     </a>
-
     <nav class="menu">
-        <a href="/store/">Trang chủ</a>
+        <a href="/store/" class="{% if request.path == '/store/' %}active{% endif %}">Trang chủ</a>
         <a href="{% url 'store:product_list' %}">Sản phẩm</a>
         <a href="/store/list/">Chi nhánh</a>
         <a href="/">Bản đồ</a>
         {% if user.is_authenticated %}
-            <form method="POST" action="{% url 'store:logout' %}" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit" class="login-btn">Đăng xuất</button>
-            </form>
+        <div class="user-menu">
+            👤 {{ user.username }}
+            <div class="dropdown">
+                <a href="{% url 'store:change_password' %}">Đổi mật khẩu</a>
+
+                <form method="POST" action="{% url 'store:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit">Đăng xuất</button>
+                </form>
+            </div>
+        </div>
         {% else %}
             <a href="{% url 'store:login' %}" class="login-btn">Đăng nhập</a>
         {% endif %}
     </nav>
 </header>
 
+<div class="breadcrumb">
+    Trang chủ > Sản phẩm > {{ product.name }}
+</div>
+
 <div class="product-detail">
 
-    <img src="{{ product.image }}">
+    <div class="product-images">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" class="main-img" id="mainImage">
+        {% endif %}
+
+        <div class="thumbs">
+            {% for img in product.images.all %}
+                <img src="{{ img.image.url }}" class="thumb">
+            {% endfor %}
+        </div>
+    </div>
 
     <div class="product-info">
         <h1>{{ product.name }}</h1>
-        <p>{{ product.desc }}</p>
-        <a href="/store/" class="back-btn">← Quay lại</a>
-    </div>
 
+        <div class="rating">
+            ⭐⭐⭐⭐☆ (4.5/5)
+        </div>
+
+        <p class="price">{{ product.price }}đ</p>
+
+        <p class="short-desc"><em>{{ product.short_desc|default:"" }}</em></p>
+
+        <div class="desc" style="line-height: 1.8; text-align: justify; margin-top: 15px;">
+            {% if product.origin %}<p><strong>Nguồn gốc:</strong><br>{{ product.origin|linebreaksbr }}</p>{% endif %}
+            {% if product.brewing_method %}<p><strong>Tâm pháp pha chế:</strong><br>{{ product.brewing_method|linebreaksbr }}</p>{% endif %}
+            {% if product.anecdote %}<p><strong>Giai thoại:</strong><br>{{ product.anecdote|linebreaksbr }}</p>{% endif %}
+            {% if product.philosophy %}<p><strong>Cảm thức nhân sinh:</strong><br>{{ product.philosophy|linebreaksbr }}</p>{% endif %}
+        </div>
+
+        <a href="/store/" class="back-btn">← Quay lại</a>
+        <div style="margin-top: 15px;">
+            <a href="{% url 'store:product_list' %}" class="explore-btn">
+                🔍 Khám phá thêm sản phẩm
+            </a>
+        </div>
+    </div>
 </div>
 
-<!-- FOOTER -->
 <footer class="footer">
     <div class="footer-bottom">
         © 2026 CoffeeGIS | LAP TRINH GIS | THANH - THI - THU.
     </div>
 </footer>
+<script>
+document.querySelectorAll(".thumb").forEach(img=>{
+    img.onclick = function(){
+        document.getElementById("mainImage").src = this.src;
+    }
+});
+</script>
 </body>
 </html>

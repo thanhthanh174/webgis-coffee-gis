@@ -1,25 +1,52 @@
 {% load static %}
-
-<link rel="stylesheet" href="{% static 'store/add_pd.css' %}">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{% static 'add_pd.css' %}">
+<link rel="stylesheet" href="{% static 'responsive.css' %}">
 
 <form method="POST" enctype="multipart/form-data" class="form-box">
     <h2>THÊM SẢN PHẨM</h2>
     {% csrf_token %}
 
     <label>Chọn quán:</label>
-    {{ form.cafe }}
+    <div style="display: none;">
+    {{ form.cafes }} 
+</div>
+
+<div style="background: #fdfaf5; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px dashed #b78a44;">
+    <p><strong>📍 Đang thêm sản phẩm cho các quán:</strong></p>
+    <ul style="margin: 0; padding-left: 20px; color: #5d4037;">
+        {% for cafe in selected_cafes %}
+            <li>{{ cafe.name }}</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'store:select_cafes_for_product' %}" style="font-size: 0.8em; color: #b78a44;">(Sửa lại danh sách quán)</a>
+</div>
 
     <label>Tên sản phẩm:</label>
     {{ form.name }}
 
-    <label>Mô tả:</label>
-    {{ form.description }}
+    <label>1. Mô tả ngắn (Dòng in nghiêng dưới tên):</label>
+    {{ form.short_desc }}
 
+    <label>2. Nguồn gốc:</label>
+    {{ form.origin }}
+
+    <label>3. Tâm pháp pha chế:</label>
+    {{ form.brewing_method }}
+
+    <label>4. Giai thoại:</label>
+    {{ form.anecdote }}
+
+    <label>5. Cảm thức nhân sinh:</label>
+    {{ form.philosophy }}
     <label>Giá:</label>
     {{ form.price }}
 
-    <label>Ảnh:</label>
+    <label>Ảnh chính:</label>
     {{ form.image }}
+
+    <label>Ảnh phụ (Để vuốt qua vuốt lại):</label>
+    <input type="file" name="images" multiple>
 
     <button type="submit">Lưu</button>
     <a href="{% url 'store:admin_product' %}" class="back-link">⬅ Quay lại</a>

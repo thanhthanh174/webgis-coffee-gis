@@ -10,4 +10,6 @@ urlpatterns = [
     path('maps/', views.map_view, name='map'),
     path("api/review/add/", views.add_review, name="add_review"),
     path("api/review/<int:cafe_id>/", views.get_reviews, name="get_reviews"),
+    path('export/', views.export_excel, name='export_excel'),
+    path('export-booking/', views.export_booking_excel, name='export_booking_excel'),
 ]

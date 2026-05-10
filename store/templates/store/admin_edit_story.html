@@ -1,0 +1,296 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chỉnh sửa {{ title }} - Katinat Admin</title>
+    <link rel="stylesheet" href="{% static 'ad_style.css' %}">
+    <link rel="stylesheet" href="{% static 'responsive.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'admin/images/logo-katinat.webp' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        body { background-color: #f4ece1; font-family: Arial, sans-serif; margin: 0; }
+        .editor-container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        .topbar nav { display: flex; align-items: center; gap: 15px; }
+        .topbar nav a { padding: 8px 12px; border-radius: 5px; transition: 0.3s; text-decoration: none; color: white; }
+        .topbar nav a:hover { background-color: rgba(197, 162, 125, 0.2); color: #c5a27d; }
+        .nav-highlight { color: #c5a27d !important; border: 1px solid rgba(197, 162, 125, 0.5); }
+        .nav-highlight:hover { background-color: #c5a27d !important; color: #1a2428 !important; }
+
+        .sticky-bar {
+            position: sticky; top: 0; z-index: 100;
+            background: #1a2428; padding: 15px 30px;
+            border-bottom: 2px solid #b78a44;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+        .sticky-bar h2 { color: #c5a27d; margin: 0; font-family: 'Playfair Display', serif; font-size: 1.5em; }
+        .btn-back { color: white; text-decoration: none; font-weight: bold; background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 8px; transition: 0.3s; }
+        .btn-back:hover { background: rgba(255,255,255,0.2); }
+        .btn-save { background: #b78a44; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; font-size: 1.1em; cursor: pointer; transition: 0.3s; }
+        .btn-save:hover { background: #9d7335; transform: translateY(-2px); }
+
+        .section-block { background: white; border-radius: 15px; overflow: hidden; margin-bottom: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .preview-card { padding: 40px; position: relative; }
+        .preview-card h2, .preview-card h3 { font-family: 'Playfair Display', serif; color: #5d4037; margin-top: 0; width: 75%; }
+        .preview-card h2 { font-size: 2.2em; }
+        .preview-card h3 { font-size: 1.8em; color: #b78a44; }
+        .preview-card img { max-width: 100%; border-radius: 12px; margin: 20px 0; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .preview-card p { color: #555; line-height: 1.8; white-space: pre-wrap; font-size: 1.05em; }
+        
+        .action-group { position: absolute; top: 30px; right: 30px; display: flex; gap: 10px; }
+        .action-group button { border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-edit-mode { background: #e0ceb1; color: #5d4037; }
+        .btn-edit-mode:hover { background: #c5a27d; color: white; }
+        .btn-delete-mode { background: #ffebee; color: #d32f2f; }
+        .btn-delete-mode:hover { background: #d32f2f; color: white; }
+
+        .edit-form-card { background: #faf8f5; padding: 30px; border-top: 2px dashed #e0ceb1; display: none; }
+        .edit-form-card label { font-weight: bold; color: #5d4037; display: block; margin: 15px 0 5px; }
+        .edit-form-card input[type="text"], .edit-form-card textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: Arial; }
+        .edit-form-card textarea { min-height: 250px; resize: vertical; }
+        .btn-done { background: #1a2428; color: white; padding: 10px 20px; border: none; border-radius: 8px; margin-top: 20px; cursor: pointer; display: block; width: 100%; font-size: 1.1em; }
+        .btn-done:hover { background: #2c3e45; }
+        .empty-state { padding: 30px; text-align: center; border: 2px dashed #ccc; border-radius: 12px; color: #999; margin: 20px 0; font-style: italic; }
+    </style>
+</head>
+<body>
+
+<header class="topbar">
+    <a href="/store/admin" class="logo-link">
+        <div class="logo"><img src="{% static 'admin/images/logo-katinat.webp' %}" class="logo-icon"> KATINAT Coffee - Admin</div>
+    </a>
+    <nav>
+        <a href="{% url 'store:admin_dashboard' %}">Chi nhánh</a>
+        <a href="{% url 'store:admin_product' %}">Sản phẩm</a>
+        <a href="{% url 'store:admin_event_list' %}">Sự kiện</a>
+        <a href="{% url 'store:admin_booking' %}">Đặt chỗ</a>
+        <a href="{% url 'store:admin_review' %}">Đánh giá</a>
+        <a href="{% url 'store:admin_user' %}">Người dùng</a>
+        <span style="color: rgba(255,255,255,0.3);">|</span>
+        <a href="{% url 'store:admin_edit_story' %}" class="nav-highlight"><i class="fas fa-scroll"></i> Tuyên Ngôn</a>
+        <a href="{% url 'store:admin_edit_home_story' %}" class="nav-highlight"><i class="fas fa-heart"></i> Tâm Thư</a>
+        {% if user.is_authenticated %}
+        <div class="user-menu">
+            👤 {{ user.username }}
+            <div class="dropdown">
+                <a href="{% url 'store:change_password' %}">Đổi mật khẩu</a>
+
+                <form method="POST" action="{% url 'store:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit">Đăng xuất</button>
+                </form>
+            </div>
+        </div>
+        {% else %}
+            <a href="{% url 'store:login' %}" class="login-btn">Đăng nhập</a>
+        {% endif %}
+    </nav>
+</header>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="sticky-bar">
+        <a href="javascript:history.back()" class="btn-back"><i class="fas fa-arrow-left"></i> Quay lại</a>
+        <h2>{{ title }}</h2>
+        <button type="submit" class="btn-save"><i class="fas fa-save"></i> LƯU THAY ĐỔI</button>
+    </div>
+
+    <div class="editor-container" id="main-editor-container">
+        
+        <!-- VÒNG LẶP CHO ĐOẠN 1 ĐẾN 9 (Đã fix lỗi sập vòng lặp) -->
+        {% for i in "123456789"|make_list %}
+        <div class="section-block" id="section-{{ i }}" style="display: none;">
+            <div class="preview-card" id="preview-{{ i }}">
+                <div class="action-group">
+                    <button type="button" class="btn-edit-mode" onclick="toggleEdit('{{ i }}')"><i class="fas fa-edit"></i> Sửa</button>
+                    <button type="button" class="btn-delete-mode" onclick="clearData('{{ i }}')"><i class="fas fa-trash"></i> Xóa</button>
+                </div>
+                
+                {% if i == '1' %}
+                    <h2>{{ form.instance.main_title|default:"[Chưa có tiêu đề chính]" }}</h2>
+                    {% if form.instance.image_1 %}<img src="{{ form.instance.image_1.url }}">{% else %}<div class="empty-state"><i class="fas fa-image fa-2x"></i><br>Chưa có ảnh 1</div>{% endif %}
+                    <p>{{ form.instance.text_1|default:"[Chưa có nội dung đoạn 1]" }}</p>
+                {% elif i == '2' %}
+                    <h3>{{ form.instance.title_2|default:"[Chưa có tiêu đề 2]" }}</h3>
+                    {% if form.instance.image_2 %}<img src="{{ form.instance.image_2.url }}">{% else %}<div class="empty-state">Chưa có ảnh 2</div>{% endif %}
+                    <p>{{ form.instance.text_2|default:"[Chưa có nội dung đoạn 2]" }}</p>
+                {% elif i == '3' %}
+                    <h3>{{ form.instance.title_3|default:"[Chưa có tiêu đề 3]" }}</h3>
+                    {% if form.instance.image_3 %}<img src="{{ form.instance.image_3.url }}">{% else %}<div class="empty-state">Chưa có ảnh 3</div>{% endif %}
+                    <p>{{ form.instance.text_3|default:"[Chưa có nội dung đoạn 3]" }}</p>
+                {% elif i == '4' %}
+                    <h3>{{ form.instance.title_4|default:"[Chưa có tiêu đề 4]" }}</h3>
+                    {% if form.instance.image_4 %}<img src="{{ form.instance.image_4.url }}">{% else %}<div class="empty-state">Chưa có ảnh 4</div>{% endif %}
+                    <p>{{ form.instance.text_4|default:"[Chưa có nội dung đoạn 4]" }}</p>
+                {% elif i == '5' %}
+                    <h3>{{ form.instance.title_5|default:"[Chưa có tiêu đề 5]" }}</h3>
+                    {% if form.instance.image_5 %}<img src="{{ form.instance.image_5.url }}">{% else %}<div class="empty-state">Chưa có ảnh 5</div>{% endif %}
+                    <p>{{ form.instance.text_5|default:"[Chưa có nội dung đoạn 5]" }}</p>
+                {% elif i == '6' %}
+                    <h3>{{ form.instance.title_6|default:"[Chưa có tiêu đề 6]" }}</h3>
+                    {% if form.instance.image_6 %}<img src="{{ form.instance.image_6.url }}">{% else %}<div class="empty-state">Chưa có ảnh 6</div>{% endif %}
+                    <p>{{ form.instance.text_6|default:"[Chưa có nội dung đoạn 6]" }}</p>
+                {% elif i == '7' %}
+                    <h3>{{ form.instance.title_7|default:"[Chưa có tiêu đề 7]" }}</h3>
+                    {% if form.instance.image_7 %}<img src="{{ form.instance.image_7.url }}">{% else %}<div class="empty-state">Chưa có ảnh 7</div>{% endif %}
+                    <p>{{ form.instance.text_7|default:"[Chưa có nội dung đoạn 7]" }}</p>
+                {% elif i == '8' %}
+                    <h3>{{ form.instance.title_8|default:"[Chưa có tiêu đề 8]" }}</h3>
+                    {% if form.instance.image_8 %}<img src="{{ form.instance.image_8.url }}">{% else %}<div class="empty-state">Chưa có ảnh 8</div>{% endif %}
+                    <p>{{ form.instance.text_8|default:"[Chưa có nội dung đoạn 8]" }}</p>
+                {% elif i == '9' %}
+                    <h3>{{ form.instance.title_9|default:"[Chưa có tiêu đề 9]" }}</h3>
+                    {% if form.instance.image_9 %}<img src="{{ form.instance.image_9.url }}">{% else %}<div class="empty-state">Chưa có ảnh 9</div>{% endif %}
+                    <p>{{ form.instance.text_9|default:"[Chưa có nội dung đoạn 9]" }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="edit-form-card" id="edit-{{ i }}">
+                <h3><i class="fas fa-pen"></i> Chỉnh sửa Đoạn {{ i }}</h3>
+                
+                {% if i == '1' %}
+                    {{ form.main_title.label_tag }} {{ form.main_title }}
+                    {{ form.image_1.label_tag }} {{ form.image_1 }}
+                    {{ form.text_1.label_tag }} {{ form.text_1 }}
+                {% elif i == '2' %}
+                    {{ form.title_2.label_tag }} {{ form.title_2 }} {{ form.image_2.label_tag }} {{ form.image_2 }} {{ form.text_2.label_tag }} {{ form.text_2 }}
+                {% elif i == '3' %}
+                    {{ form.title_3.label_tag }} {{ form.title_3 }} {{ form.image_3.label_tag }} {{ form.image_3 }} {{ form.text_3.label_tag }} {{ form.text_3 }}
+                {% elif i == '4' %}
+                    {{ form.title_4.label_tag }} {{ form.title_4 }} {{ form.image_4.label_tag }} {{ form.image_4 }} {{ form.text_4.label_tag }} {{ form.text_4 }}
+                {% elif i == '5' %}
+                    {{ form.title_5.label_tag }} {{ form.title_5 }} {{ form.image_5.label_tag }} {{ form.image_5 }} {{ form.text_5.label_tag }} {{ form.text_5 }}
+                {% elif i == '6' %}
+                    {{ form.title_6.label_tag }} {{ form.title_6 }} {{ form.image_6.label_tag }} {{ form.image_6 }} {{ form.text_6.label_tag }} {{ form.text_6 }}
+                {% elif i == '7' %}
+                    {{ form.title_7.label_tag }} {{ form.title_7 }} {{ form.image_7.label_tag }} {{ form.image_7 }} {{ form.text_7.label_tag }} {{ form.text_7 }}
+                {% elif i == '8' %}
+                    {{ form.title_8.label_tag }} {{ form.title_8 }} {{ form.image_8.label_tag }} {{ form.image_8 }} {{ form.text_8.label_tag }} {{ form.text_8 }}
+                {% elif i == '9' %}
+                    {{ form.title_9.label_tag }} {{ form.title_9 }} {{ form.image_9.label_tag }} {{ form.image_9 }} {{ form.text_9.label_tag }} {{ form.text_9 }}
+                {% endif %}
+                
+                <button type="button" class="btn-done" onclick="toggleEdit('{{ i }}')"><i class="fas fa-check"></i> Xong (Thu gọn)</button>
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- ĐOẠN 10 TÁCH RIÊNG RA NGOÀI LUÔN CHO CHẮC ĂN -->
+        <div class="section-block" id="section-10" style="display: none;">
+            <div class="preview-card" id="preview-10">
+                <div class="action-group">
+                    <button type="button" class="btn-edit-mode" onclick="toggleEdit('10')"><i class="fas fa-edit"></i> Sửa</button>
+                    <button type="button" class="btn-delete-mode" onclick="clearData('10')"><i class="fas fa-trash"></i> Xóa</button>
+                </div>
+                <h3>{{ form.instance.title_10|default:"[Chưa có tiêu đề 10]" }}</h3>
+                {% if form.instance.image_10 %}<img src="{{ form.instance.image_10.url }}">{% else %}<div class="empty-state">Chưa có ảnh 10</div>{% endif %}
+                <p>{{ form.instance.text_10|default:"[Chưa có nội dung đoạn 10]" }}</p>
+            </div>
+            
+            <div class="edit-form-card" id="edit-10">
+                <h3><i class="fas fa-pen"></i> Chỉnh sửa Đoạn 10</h3>
+                {{ form.title_10.label_tag }} {{ form.title_10 }} 
+                {{ form.image_10.label_tag }} {{ form.image_10 }} 
+                {{ form.text_10.label_tag }} {{ form.text_10 }}
+                <button type="button" class="btn-done" onclick="toggleEdit('10')"><i class="fas fa-check"></i> Xong (Thu gọn)</button>
+            </div>
+        </div>
+
+        <!-- NÚT THÊM VĂN BẢN -->
+        <div style="text-align: center; margin: 30px 0;" id="btn-add-more-container">
+            <button type="button" id="btn-add-more" class="btn-save" style="background-color: #5d4037; border-radius: 30px; padding: 10px 25px;" onclick="showNextSection()">
+                <i class="fas fa-plus-circle"></i> Thêm văn bản (Đoạn 5)
+            </button>
+        </div>
+
+    </div>
+</form>
+
+<script>
+    let currentVisible = 4; // Mặc định hiển thị 4 đoạn ban đầu
+
+    document.addEventListener("DOMContentLoaded", function() {
+        for (let i = 1; i <= 10; i++) {
+            let section = document.getElementById('section-' + i);
+            if (!section) continue; // Tránh lỗi crash nếu thiếu section
+
+            // Đoạn 1 biến tên là main_title, các đoạn sau là title_x
+            let titleInput = (i === 1) ? document.querySelector('input[name="main_title"]') : document.querySelector('input[name="title_' + i + '"]');
+            let textInput = document.querySelector('textarea[name="text_' + i + '"]');
+            let previewCard = document.getElementById('preview-' + i);
+
+            let hasData = false;
+            // Check coi có dữ liệu chưa
+            if (titleInput && titleInput.value && titleInput.value.trim() !== '') hasData = true;
+            if (textInput && textInput.value && textInput.value.trim() !== '') hasData = true;
+            if (previewCard && !previewCard.querySelector('.empty-state')) hasData = true;
+
+            // Bung lụa 4 đoạn đầu, hoặc các đoạn đã có dữ liệu
+            if (hasData || i <= 4) {
+                section.style.display = 'block';
+                if (i > currentVisible) currentVisible = i;
+            }
+        }
+        updateButtonText();
+    });
+
+    function updateButtonText() {
+        let btn = document.getElementById('btn-add-more');
+        let container = document.getElementById('btn-add-more-container');
+        if (currentVisible >= 10) {
+            container.style.display = 'none'; // Tới nóc thì giấu nút
+        } else {
+            container.style.display = 'block';
+            btn.innerHTML = '<i class="fas fa-plus-circle"></i> Thêm văn bản (Đoạn ' + (currentVisible + 1) + ')';
+        }
+    }
+
+    function showNextSection() {
+        if (currentVisible < 10) {
+            currentVisible++;
+            let newSec = document.getElementById('section-' + currentVisible);
+            if(newSec) {
+                newSec.style.display = 'block';
+                newSec.scrollIntoView({ behavior: 'smooth' });
+                document.getElementById('edit-' + currentVisible).style.display = 'block';
+                updateButtonText();
+            }
+        }
+    }
+
+    function toggleEdit(id) {
+        let formCard = document.getElementById('edit-' + id);
+        formCard.style.display = (formCard.style.display === 'none' || formCard.style.display === '') ? 'block' : 'none';
+    }
+
+    function clearData(id) {
+        if(!confirm('Cảnh báo: Bạn có chắc muốn xóa sạch nội dung của đoạn này không?')) return;
+        let editCard = document.getElementById('edit-' + id);
+        
+        let textInputs = editCard.querySelectorAll('input[type="text"], textarea');
+        textInputs.forEach(input => input.value = '');
+        
+        let clearCheckboxes = editCard.querySelectorAll('input[type="checkbox"][name$="-clear"]');
+        clearCheckboxes.forEach(cb => cb.checked = true);
+        
+        let previewCard = document.getElementById('preview-' + id);
+        let titleNode = id === '1' ? previewCard.querySelector('h2') : previewCard.querySelector('h3');
+        titleNode.innerText = '[Đã xóa rỗng - Chờ Lưu]';
+        titleNode.style.color = '#d32f2f'; 
+        
+        previewCard.querySelector('p').innerText = ''; 
+        let img = previewCard.querySelector('img');
+        if(img) img.style.display = 'none'; 
+
+        alert('Đã dọn sạch Đoạn ' + id + '! Vui lòng kéo lên thanh công cụ bấm "LƯU THAY ĐỔI" để chốt đơn nhé.');
+    }
+</script>
+
+</body>
+</html>

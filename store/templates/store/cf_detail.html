@@ -1,9 +1,79 @@
-<h2>{{ cafe.name }}</h2>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{% static 'responsive.css' %}">
+<style>
+    /* Style cho Album ảnh */
+    .gallery-title { color: #1a292e; margin-top: 20px; font-family: sans-serif; }
+    .gallery-wrapper {
+        display: flex;
+        overflow-x: auto; /* Cho phép vuốt ngang trên điện thoại */
+        gap: 15px;
+        padding-bottom: 15px;
+        scrollbar-width: thin;
+    }
+    .gallery-item {
+        flex: 0 0 auto;
+        width: 250px;
+        height: 180px;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        cursor: pointer;
+        transition: transform 0.3s;
+    }
+    .gallery-item:hover { transform: scale(1.05); }
+    .gallery-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    /* Style cho danh sách sản phẩm của m */
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
+        margin-top: 30px;
+    }
+    .product-card {
+        border: 1px solid #eee;
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+    }
+</style>
 
-{% for p in products %}
-    <div>
-        <h3>{{ p.name }}</h3>
-        <img src="{{ p.image.url }}" width="200">
-        <p>{{ p.price }} VNĐ</p>
-    </div>
-{% endfor %}
+<h2 style="color: #c5a27d; font-family: sans-serif; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+    ☕ {{ cafe.name }}
+</h2>
+
+<h3 class="gallery-title">📸 Hình ảnh quán</h3>
+<div class="gallery-wrapper">
+    {% with album=cafe.images.all %}
+        {% if album %}
+            {% for img in album %}
+                <div class="gallery-item">
+                    <img src="{{ img.image.url }}" alt="Ảnh {{ cafe.name }}">
+                </div>
+            {% endfor %}
+        {% else %}
+            <p style="color: #888; font-style: italic;">Chưa có ảnh album cho chi nhánh này.</p>
+        {% endif %}
+    {% endwith %}
+</div>
+
+<hr style="margin: 40px 0; border: 0.5px solid #eee;">
+
+<h3 class="gallery-title">🥤 Menu thức uống</h3>
+<div class="product-grid">
+    {% for p in products %}
+        <div class="product-card">
+            <h3 style="font-size: 16px;">{{ p.name }}</h3>
+            {% if p.image %}
+                <img src="{{ p.image.url }}" width="100%" style="border-radius: 8px; margin: 10px 0;">
+            {% endif %}
+            <p style="color: #c5a27d; font-weight: bold;">{{ p.price }} VNĐ</p>
+        </div>
+    {% empty %}
+        <p>Hiện quán chưa cập nhật thực đơn.</p>
+    {% endfor %}
+</div>

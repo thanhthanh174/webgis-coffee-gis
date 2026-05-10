@@ -1,0 +1,158 @@
+/* ===============================
+   RESPONSIVE - COFFEEGIS
+================================ */
+
+/* ===== TABLET (<=1024px) ===== */
+@media (max-width: 1024px) {
+
+    .topbar {
+        padding: 0 20px;
+    }
+
+    .topbar nav {
+        gap: 15px;
+    }
+
+    .search-box input {
+        width: 250px;
+    }
+
+    .info-box {
+        width: 280px;
+    }
+}
+
+/* ===== MOBILE (<=768px) ===== */
+@media (max-width: 768px) {
+
+    /* ===== HEADER ===== */
+    .topbar {
+        flex-direction: column;
+        height: auto;
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .topbar nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .logo {
+        font-size: 18px;
+    }
+
+    /* ===== SEARCH ===== */
+    .search-box {
+        width: 100%;
+        top: 75px;
+    }
+
+    .search-box input {
+        width: 90%;
+        font-size: 14px;
+    }
+
+    /* ===== INFO BOX (MAP) ===== */
+    .info-box {
+        width: 90%;
+        left: 5%;
+        right: 5%;
+        top: 90px;
+        max-height: 75vh;
+    }
+
+    .filter-panel {
+        width: 90%;
+        left: 5%;
+    }
+
+    /* ===== MAP CONTROLS ===== */
+    .leaflet-routing-container {
+        max-width: 90%;
+        left: 5% !important;
+    }
+
+    .leaflet-control-zoom {
+        bottom: 150px !important;
+    }
+
+    /* ===== SLIDER ===== */
+    .slider img {
+        height: 180px;
+    }
+
+    /* ===== BUTTON ===== */
+    .route-btn {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .btn-primary,
+    .btn-success {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    /* ===== REVIEW ===== */
+    .review-box {
+        max-height: 120px;
+        font-size: 0.85em;
+    }
+
+    input, textarea {
+        font-size: 14px;
+        padding: 6px;
+    }
+
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .nav-links {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .search-box {
+        width: 90%;
+    }
+}
+
+/* ===== SMALL PHONE (<=480px) ===== */
+@media (max-width: 480px) {
+
+    .logo {
+        font-size: 16px;
+    }
+
+    .topbar nav a {
+        font-size: 14px;
+    }
+
+    .login-btn {
+        font-size: 12px;
+        padding: 5px 10px;
+    }
+
+    .search-box input {
+        width: 95%;
+    }
+
+    .info-box {
+        top: 80px;
+        padding: 10px;
+    }
+
+    .slider img {
+        height: 150px;
+    }
+
+    .tab-btn {
+        font-size: 12px;
+        padding: 6px;
+    }
+}
+
